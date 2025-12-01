@@ -1,0 +1,79 @@
+{
+    "name": "John Doe",
+    "email": "john@example.com",
+    "phone": "+91-12345-67890",
+    "portfolio": "https://johndoe.dev",
+    "github": "https://github.com/johndoe",
+  
+    "education": [
+      {
+        "institution": "Netaji Subhash Engineering College",
+        "location": "Kolkata, India",
+        "degree": "Bachelor of Technology - Information Technology",
+        "gpa": "7.27",
+        "start": "July 2016",
+        "end": "June 2020",
+        "courses": [
+          "Operating Systems",
+          "Data Structures",
+          "Artificial Intelligence",
+          "Machine Learning"
+        ]
+      }
+    ],
+  
+    "skills": {
+      "Languages": ["Python", "JavaScript", "SQL"],
+      "Frameworks": ["Django", "React"],
+      "Tools": ["Docker", "Git", "PostgreSQL"],
+      "Platforms": ["Linux", "AWS"],
+      "Soft Skills": ["Leadership", "Public Speaking"]
+    },
+  
+    "experience": [
+      {
+        "company": "Google Summer of Code - Submitty",
+        "location": "Remote",
+        "role": "Student Developer",
+        "start": "May 2019",
+        "end": "Sep 2019",
+        "points": [
+          "Refactored forum for performance.",
+          "Built REST API for forum functionality.",
+          "Implemented WebSocket for realtime updates."
+        ]
+      }
+    ],
+  
+    "projects": [
+      {
+        "title": "Vison - Multimedia Search Engine",
+        "description": "Open-source search engine using NLP and image processing.",
+        "tech": "Python, TensorFlow"
+      }
+    ],
+  
+    "publications": [
+      {
+        "title": "Deep Learning on Web",
+        "description": "Book in progress. Tech: Django, Python, AWS."
+      }
+    ],
+  
+    "awards": [
+      "Intel Software Innovator - 2019",
+      "TCS EngiNx Runner Up - 2018"
+    ],
+  
+    "volunteer": [
+      {
+        "role": "Community Lead",
+        "org": "Developer Student Clubs NSEC",
+        "location": "Kolkata",
+        "start": "Jan 2019",
+        "end": "Present",
+        "description": "Conducted technical training for 3000+ students."
+      }
+    ]
+  }
+  
