@@ -1,12 +1,15 @@
 const express = require("express");
 const router = express.Router();
 
-const { editAI, acceptEdit } = require("../controllers/aiController");
+const { aiSuggestionsEdit} = require("../controllers/editController");
 const { askAI } = require("../controllers/askController");
+const {acceptEdit} = require("../controllers/acceptEditController")
 const requireAuth = require("../middlewares/authMiddleware");
 
-router.post("/edit", requireAuth, editAI);
+router.post("/suggestion", requireAuth, aiSuggestionsEdit);
 router.post("/ask", requireAuth, askAI);
-router.post("/accept", requireAuth, acceptEdit);
+router.post("/accept-edit",requireAuth, acceptEdit)
+router
+
 
 module.exports = router;
