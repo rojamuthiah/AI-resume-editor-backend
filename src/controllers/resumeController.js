@@ -70,7 +70,7 @@ exports.saveResume = async (req, res) => {
 exports.renderResume = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { templateKey } = req.body;
+    const { templateKey } = req.body; // Only need templateKey
 
     // Load template
     const templatePath = path.join(
@@ -88,20 +88,31 @@ exports.renderResume = async (req, res) => {
 
     const template = fs.readFileSync(templatePath, "utf8");
 
-    // Fetch resume JSON
+    // Fetch resume JSON from DB (source of truth)
     const resume = await UserResume.findOne({ userId, templateKey });
     if (!resume) {
       return res.status(404).json({ success: false, message: "Resume not found" });
     }
 
-    // 🔑 PREPARE DATA FOR MUSTACHE
+    // 🔑 PREPARE DATA FOR MUSTACHE with all helper flags
     const resumeData = {
       ...resume.resumeJson,
-
+      
+      // Helper flags for conditional sections (REQUIRED for template)
+      hasSummary: !!resume.resumeJson.summary,
+      hasEducation: Array.isArray(resume.resumeJson.education) && resume.resumeJson.education.length > 0,
+      hasSkills: resume.resumeJson.skills && Object.keys(resume.resumeJson.skills).length > 0,
+      hasExperience: Array.isArray(resume.resumeJson.experience) && resume.resumeJson.experience.length > 0,
+      hasProjects: Array.isArray(resume.resumeJson.projects) && resume.resumeJson.projects.length > 0,
+      hasPublications: Array.isArray(resume.resumeJson.publications) && resume.resumeJson.publications.length > 0,
+      hasAwards: Array.isArray(resume.resumeJson.awards) && resume.resumeJson.awards.length > 0,
+      hasVolunteer: Array.isArray(resume.resumeJson.volunteer) && resume.resumeJson.volunteer.length > 0,
+      
+      // Skills array for Mustache loop
       skillsArray: Object.entries(resume.resumeJson.skills || {}).map(
         ([category, values]) => ({
           category,
-          values: values.join(", ")
+          values: Array.isArray(values) ? values.join(", ") : String(values)
         })
       )
     };
