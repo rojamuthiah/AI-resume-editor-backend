@@ -70,7 +70,7 @@ exports.saveResume = async (req, res) => {
 exports.renderResume = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { templateKey } = req.body; // Only need templateKey
+    const { templateKey, previewMode = false, previewData = null } = req.body;
 
     // Load template
     const templatePath = path.join(
@@ -88,33 +88,91 @@ exports.renderResume = async (req, res) => {
 
     const template = fs.readFileSync(templatePath, "utf8");
 
-    // Fetch resume JSON from DB (source of truth)
-    const resume = await UserResume.findOne({ userId, templateKey });
-    if (!resume) {
-      return res.status(404).json({ success: false, message: "Resume not found" });
+    let resumeJsonData;
+    let originalData = null;
+
+    // 🔑 PREVIEW MODE: Show diff between original and preview
+    if (previewMode && previewData) {
+      const resume = await UserResume.findOne({ userId, templateKey });
+      if (!resume) {
+        return res.status(404).json({ success: false, message: "Resume not found" });
+      }
+
+      originalData = resume.resumeJson;
+      
+      // Merge preview data
+      resumeJsonData = {
+        ...resume.resumeJson,
+        ...previewData
+      };
+    } 
+    // 🔑 NORMAL MODE: Use DB as source of truth
+    else {
+      const resume = await UserResume.findOne({ userId, templateKey });
+      if (!resume) {
+        return res.status(404).json({ success: false, message: "Resume not found" });
+      }
+      resumeJsonData = resume.resumeJson;
     }
 
-    // 🔑 PREPARE DATA FOR MUSTACHE with all helper flags
+    // 🔑 Add diff markers for arrays (experience, projects, etc.)
+    if (previewMode && originalData && previewData) {
+      Object.keys(previewData).forEach(sectionKey => {
+        if (Array.isArray(previewData[sectionKey]) && Array.isArray(originalData[sectionKey])) {
+          const original = originalData[sectionKey];
+          const updated = previewData[sectionKey];
+
+          // Mark items: added (new), removed (old), or unchanged
+          resumeJsonData[sectionKey] = updated.map((item, idx) => {
+            const originalItem = original[idx];
+            
+            // Check if item changed
+            if (!originalItem) {
+              return { ...item, _diffStatus: 'added' };
+            }
+            
+            const itemChanged = JSON.stringify(item) !== JSON.stringify(originalItem);
+            if (itemChanged) {
+              return { ...item, _diffStatus: 'modified', _original: originalItem };
+            }
+            
+            return { ...item, _diffStatus: 'unchanged' };
+          });
+
+          // Add removed items at the end
+          if (original.length > updated.length) {
+            for (let i = updated.length; i < original.length; i++) {
+              resumeJsonData[sectionKey].push({
+                ...original[i],
+                _diffStatus: 'removed'
+              });
+            }
+          }
+        }
+      });
+    }
+
+    // 🔑 PREPARE DATA FOR MUSTACHE
     const resumeData = {
-      ...resume.resumeJson,
+      ...resumeJsonData,
       
-      // Helper flags for conditional sections (REQUIRED for template)
-      hasSummary: !!resume.resumeJson.summary,
-      hasEducation: Array.isArray(resume.resumeJson.education) && resume.resumeJson.education.length > 0,
-      hasSkills: resume.resumeJson.skills && Object.keys(resume.resumeJson.skills).length > 0,
-      hasExperience: Array.isArray(resume.resumeJson.experience) && resume.resumeJson.experience.length > 0,
-      hasProjects: Array.isArray(resume.resumeJson.projects) && resume.resumeJson.projects.length > 0,
-      hasPublications: Array.isArray(resume.resumeJson.publications) && resume.resumeJson.publications.length > 0,
-      hasAwards: Array.isArray(resume.resumeJson.awards) && resume.resumeJson.awards.length > 0,
-      hasVolunteer: Array.isArray(resume.resumeJson.volunteer) && resume.resumeJson.volunteer.length > 0,
+      hasSummary: !!resumeJsonData.summary,
+      hasEducation: Array.isArray(resumeJsonData.education) && resumeJsonData.education.length > 0,
+      hasSkills: resumeJsonData.skills && Object.keys(resumeJsonData.skills).length > 0,
+      hasExperience: Array.isArray(resumeJsonData.experience) && resumeJsonData.experience.length > 0,
+      hasProjects: Array.isArray(resumeJsonData.projects) && resumeJsonData.projects.length > 0,
+      hasPublications: Array.isArray(resumeJsonData.publications) && resumeJsonData.publications.length > 0,
+      hasAwards: Array.isArray(resumeJsonData.awards) && resumeJsonData.awards.length > 0,
+      hasVolunteer: Array.isArray(resumeJsonData.volunteer) && resumeJsonData.volunteer.length > 0,
       
-      // Skills array for Mustache loop
-      skillsArray: Object.entries(resume.resumeJson.skills || {}).map(
+      skillsArray: Object.entries(resumeJsonData.skills || {}).map(
         ([category, values]) => ({
           category,
           values: Array.isArray(values) ? values.join(", ") : String(values)
         })
-      )
+      ),
+
+      isPreview: previewMode
     };
 
     // Render HTML
@@ -124,7 +182,7 @@ exports.renderResume = async (req, res) => {
     const pdfBuffer = await generatePDF(html);
 
     res.setHeader("Content-Type", "application/pdf");
-    res.setHeader("Content-Disposition", "attachment; filename=resume.pdf");
+    res.setHeader("Content-Disposition", "inline; filename=" + (previewMode ? "preview.pdf" : "resume.pdf"));
     res.send(pdfBuffer);
 
   } catch (err) {

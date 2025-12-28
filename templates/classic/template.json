@@ -4,6 +4,7 @@
     "phone": "+91-12345-67890",
     "portfolio": "https://johndoe.dev",
     "github": "https://github.com/johndoe",
+    "summary": "",
   
     "education": [
       {
@@ -76,4 +77,3 @@
       }
     ]
   }
-  

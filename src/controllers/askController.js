@@ -1,4 +1,3 @@
-// controllers/askController.js
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const ResumeConversation = require("../models/resumeConversation");
 const {
@@ -37,8 +36,12 @@ exports.askAI = async (req, res) => {
       convo = await createConversation(userId, templateKey, title);
     }
 
+    // Filter only "ask" type messages and get last 3 conversations (6 messages: 3 user + 3 ai)
+    const askMessages = (convo?.messages || []).filter(msg => msg.type === "ask");
+    const lastThreeMessages = askMessages.slice(-6); // Last 6 messages = 3 conversations
+
     // Convert conversation to Gemini format
-    const history = (convo?.messages || []).map((msg) => ({
+    const history = lastThreeMessages.map((msg) => ({
       role: msg.role === "assistant" ? "model" : "user",
       parts: [{ text: msg.content }]
     }));
@@ -58,16 +61,28 @@ exports.askAI = async (req, res) => {
       { upsert: true }
     );
 
-    // Gemini request
+    // Gemini request with system prompt for ask mode
+    const systemPrompt = `You are an ATS resume assistant. You can help users with:
+- Resume critique and feedback
+- Questions about resume content
+- Job description analysis
+- Resume details discussion
+- General resume advice
+
+IMPORTANT: If the user asks you to EDIT or MODIFY the resume content, DO NOT do it. Instead, respond with:
+"I can help you critique and discuss your resume, but to actually edit and improve sections, please use the Edit Agent mode. There you can request specific improvements to your resume sections, skills, experience, and more. You can also share job descriptions for targeted optimization."
+
+Focus on answering questions and providing insights about the resume only.`;
+
     const result = await model.generateContent({
       contents: [
+        { role: "user", parts: [{ text: systemPrompt }] },
         ...history,
         {
           role: "user",
           parts: [
             {
               text:
-                `You are an ATS resume assistant.\n\n` +
                 `Resume JSON:\n${JSON.stringify(resumeJson, null, 2)}\n\n` +
                 `User question:\n${prompt}`
             }

@@ -1,18 +1,31 @@
 const UserResume = require("../models/UserResume");
 
+// Helper to compare sections (handles arrays and objects)
+const sectionsMatch = (current, before) => {
+  if (Array.isArray(current) && Array.isArray(before)) {
+    return JSON.stringify(current) === JSON.stringify(before);
+  }
+  if (typeof current === 'object' && typeof before === 'object') {
+    return JSON.stringify(current) === JSON.stringify(before);
+  }
+  return current === before;
+};
+
 exports.acceptEdit = async (req, res) => {
   try {
     const {
       templateKey,
       section,
-      sectionData
+      sectionData,
+      beforeData
     } = req.body;
 
     const userId = req.user.id;
 
-    if (!templateKey || !section || sectionData === undefined) {
+    if (!templateKey || !section || sectionData === undefined || beforeData === undefined) {
       return res.status(400).json({
-        error: "templateKey, section, and sectionData are required"
+        success: false,
+        error: "templateKey, section, sectionData, and beforeData are required"
       });
     }
 
@@ -20,23 +33,35 @@ exports.acceptEdit = async (req, res) => {
     const resume = await UserResume.findOne({ userId, templateKey });
 
     if (!resume) {
-      return res.status(404).json({ error: "Resume not found" });
-    }
-
-    /** 2️⃣ Validate section exists in resume schema */
-    if (!(section in resume.resumeJson)) {
-      return res.status(400).json({
-        error: `Invalid section '${section}'`
+      return res.status(404).json({ 
+        success: false,
+        error: "Resume not found" 
       });
     }
 
-    /** 3️⃣ Update ONLY the accepted section */
+    /** 2️⃣ Allow new sections to be added */
+    // If section doesn't exist, initialize it
+    if (!(section in resume.resumeJson)) {
+      resume.resumeJson[section] = beforeData;
+    }
+
+    /** 3️⃣ Validate "before" matches current (stale edit check) */
+    const currentSection = resume.resumeJson[section];
+    if (!sectionsMatch(currentSection, beforeData)) {
+      return res.json({
+        success: false,
+        message: "This edit is based on an older version of your resume. The section has changed since this edit was suggested.",
+        error: "incompatible_version"
+      });
+    }
+
+    /** 4️⃣ Update ONLY the accepted section */
     const updatedResumeJson = {
       ...resume.resumeJson,
       [section]: sectionData
     };
 
-    /** 4️⃣ Persist update */
+    /** 5️⃣ Persist update */
     resume.resumeJson = updatedResumeJson;
     resume.lastUpdated = new Date();
     await resume.save();
@@ -50,7 +75,70 @@ exports.acceptEdit = async (req, res) => {
   } catch (err) {
     console.error("Accept Edit Error:", err);
     return res.status(500).json({
+      success: false,
       error: "Accept edit failed",
+      details: err.message
+    });
+  }
+};
+
+exports.revertEdit = async (req, res) => {
+  try {
+    const {
+      templateKey,
+      section,
+      beforeData
+    } = req.body;
+
+    const userId = req.user.id;
+
+    if (!templateKey || !section || beforeData === undefined) {
+      return res.status(400).json({
+        success: false,
+        error: "templateKey, section, and beforeData are required"
+      });
+    }
+
+    /** 1️⃣ Load resume */
+    const resume = await UserResume.findOne({ userId, templateKey });
+
+    if (!resume) {
+      return res.status(404).json({ 
+        success: false,
+        error: "Resume not found" 
+      });
+    }
+
+    /** 2️⃣ Validate section exists */
+    if (!(section in resume.resumeJson)) {
+      return res.status(400).json({
+        success: false,
+        error: `Invalid section '${section}'`
+      });
+    }
+
+    /** 3️⃣ Revert to "before" state */
+    const updatedResumeJson = {
+      ...resume.resumeJson,
+      [section]: beforeData
+    };
+
+    /** 4️⃣ Persist update */
+    resume.resumeJson = updatedResumeJson;
+    resume.lastUpdated = new Date();
+    await resume.save();
+
+    return res.json({
+      success: true,
+      revertedSection: section,
+      resumeJson: updatedResumeJson
+    });
+
+  } catch (err) {
+    console.error("Revert Edit Error:", err);
+    return res.status(500).json({
+      success: false,
+      error: "Revert edit failed",
       details: err.message
     });
   }
