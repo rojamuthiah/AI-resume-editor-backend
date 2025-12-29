@@ -1,5 +1,6 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const ResumeConversation = require("../models/resumeConversation");
+const UserResume = require("../models/UserResume");
 const {
   createConversation,
   getConversation,
@@ -14,15 +15,23 @@ exports.askAI = async (req, res) => {
   try {
     const {
       prompt,
-      resumeJson,
       templateKey,
+      category,
       conversationId,
     } = req.body;
     const userId = req.user.id;
 
-    if (!templateKey || !prompt) {
-      return res.status(400).json({ error: "Missing templateKey or prompt" });
+    if (!templateKey || !category || !prompt) {
+      return res.status(400).json({ error: "Missing templateKey, category, or prompt" });
     }
+
+    // FETCH RESUME FROM DB WITH CATEGORY
+    const userResume = await UserResume.findOne({ userId, templateKey, category });
+    if (!userResume) {
+      return res.status(404).json({ error: "Resume not found" });
+    }
+
+    const resumeJson = userResume.resumeJson;
 
     // Find or create conversation
     let convo = null;
@@ -38,7 +47,7 @@ exports.askAI = async (req, res) => {
 
     // Filter only "ask" type messages and get last 3 conversations (6 messages: 3 user + 3 ai)
     const askMessages = (convo?.messages || []).filter(msg => msg.type === "ask");
-    const lastThreeMessages = askMessages.slice(-6); // Last 6 messages = 3 conversations
+    const lastThreeMessages = askMessages.slice(-6);
 
     // Convert conversation to Gemini format
     const history = lastThreeMessages.map((msg) => ({

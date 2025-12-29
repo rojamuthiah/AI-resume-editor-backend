@@ -8,14 +8,15 @@ const model = genAI.getGenerativeModel({ model: "models/gemini-2.5-flash" });
 
 exports.aiSuggestionsEdit = async (req, res) => {
   try {
-    const { prompt, templateKey, conversationId, jobDescription } = req.body;
+  
+    const { prompt, templateKey, category, conversationId } = req.body;
     const userId = req.user.id;
 
-    if (!prompt || !templateKey) {
-      return res.status(400).json({ error: "Missing prompt or templateKey" });
+    if (!prompt || !templateKey || !category) {
+      return res.status(400).json({ error: "Missing prompt, templateKey, or category" });
     }
 
-    const resume = await UserResume.findOne({ userId, templateKey });
+    const resume = await UserResume.findOne({ userId, templateKey, category });
     if (!resume) {
       return res.status(404).json({ error: "Resume not found" });
     }
@@ -30,7 +31,6 @@ exports.aiSuggestionsEdit = async (req, res) => {
       convo = await createConversation(userId, templateKey, prompt.slice(0, 80));
     }
 
-    // Add user message to conversation
     await ResumeConversation.findByIdAndUpdate(convo._id, {
       $push: {
         messages: {
@@ -41,11 +41,9 @@ exports.aiSuggestionsEdit = async (req, res) => {
       }
     });
 
-    // Get all messages and take the last 3 (combined ask + edit)
     const allMessages = convo?.messages || [];
     const lastThreeMessages = allMessages.slice(-3);
 
-    // Build conversation history with message type tagging
     const history = lastThreeMessages.map((msg) => {
       const msgType = msg.type === "ask" ? "[ASK MODE]" : "[EDIT MODE]";
       const role = msg.role === "user" ? "user" : "model";
@@ -77,7 +75,6 @@ STRICT RULES:
 - Return ONLY valid JSON
 - Return only the changed sections
 - No markdown, no explanations outside JSON
-- Extract ATS keywords ONLY if job description is provided
 - For each edited section, provide "before" and "after" as arrays of strings (bullet points) for display
 - ALSO provide "beforeJson" and "afterJson" with the actual JSON structure of the section
 - "before" should be the current content formatted as bullet points (for UI display)
@@ -95,7 +92,7 @@ OUTPUT FORMAT (EXACT STRUCTURE):
 {
   "messageinfo": "Brief description of changes made (2-3 sentences)",
   "keys": ["section1", "section2"],
-  "keywords": ["keyword1", "keyword2"],
+  "keywords": [],
   "edits": {
     "section1": {
       "before": ["Current point 1", "Current point 2"],
@@ -167,14 +164,14 @@ CRITICAL:
 - For simple strings: use string values, not arrays or objects
 - For arrays: use array values
 - For objects: use object values
-- keywords array should be empty [] if no job description provided
+- keywords array should always be empty []
 `;
 
     const userPrompt = `
 USER EDIT REQUEST:
 ${prompt}
 
-${jobDescription ? `JOB DESCRIPTION:\n${jobDescription}\n\n` : ''}CURRENT RESUME JSON:
+CURRENT RESUME JSON:
 ${JSON.stringify(resumeJson, null, 2)}
 
 Return JSON only, following the exact format specified.
@@ -195,42 +192,28 @@ Return JSON only, following the exact format specified.
     const parsed = JSON.parse(text);
     console.log(parsed);
 
-    // Validate structure
     if (!parsed.messageinfo || !Array.isArray(parsed.keys) || !parsed.edits) {
       throw new Error("Invalid AI response structure");
     }
 
-    // Ensure keywords is array
-    if (!Array.isArray(parsed.keywords)) {
-      parsed.keywords = [];
-    }
-
-    // Build the message object
     const messageObject = {
       messageinfo: parsed.messageinfo,
       keys: parsed.keys,
-      keywords: parsed.keywords,
+      keywords: [],
       edits: {}
     };
 
-    // Validate and structure edits
     for (const key of parsed.keys) {
       if (!parsed.edits[key]) continue;
       
       const edit = parsed.edits[key];
       
-      // Validate required display fields (before and after arrays)
       if (!Array.isArray(edit.before) || !Array.isArray(edit.after)) {
         throw new Error(`Invalid edit structure for section '${key}': before and after must be arrays`);
       }
       
-      // Validate beforeJson and afterJson exist
-      if (edit.beforeJson === undefined) {
-        throw new Error(`Invalid edit structure for section '${key}': missing beforeJson`);
-      }
-      
-      if (edit.afterJson === undefined) {
-        throw new Error(`Invalid edit structure for section '${key}': missing afterJson`);
+      if (edit.beforeJson === undefined || edit.afterJson === undefined) {
+        throw new Error(`Invalid edit structure for section '${key}': missing beforeJson or afterJson`);
       }
       
       messageObject.edits[key] = {
@@ -241,7 +224,6 @@ Return JSON only, following the exact format specified.
       };
     }
 
-    // Store AI reply
     await ResumeConversation.findByIdAndUpdate(convo._id, {
       $push: {
         messages: {
