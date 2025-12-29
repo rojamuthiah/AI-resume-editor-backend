@@ -25,10 +25,10 @@ exports.aiSuggestionsEdit = async (req, res) => {
 
     let convo;
     if (conversationId) {
-      convo = await getConversation(userId, templateKey, conversationId);
+      convo = await getConversation(userId, templateKey, category, conversationId);
       if (!convo) return res.status(404).json({ error: "Conversation not found" });
     } else {
-      convo = await createConversation(userId, templateKey, prompt.slice(0, 80));
+      convo = await createConversation(userId, templateKey, category, prompt.slice(0, 80));
     }
 
     await ResumeConversation.findByIdAndUpdate(convo._id, {

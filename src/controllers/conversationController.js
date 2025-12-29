@@ -3,17 +3,17 @@ const ResumeConversation = require("../models/resumeConversation");
 
 /**
  * GET conversation titles (dropdown)
- * userId + templateKey
+ * userId + templateKey + category
  */
 exports.listConversations = async (req, res) => {
   try {
-    const { templateKey } = req.params;
+    const { templateKey, category } = req.params; // ADDED category
 
-   
     const userId = new mongoose.Types.ObjectId(req.user.id);
 
+    // ADDED category to query
     const conversations = await ResumeConversation.find(
-      { userId, templateKey },
+      { userId, templateKey, category },
       { conversationId: 1, title: 1, updatedAt: 1, _id: 0 }
     ).sort({ updatedAt: -1 });
 
@@ -33,15 +33,19 @@ exports.listConversations = async (req, res) => {
 
 /**
  * GET latest conversation (auto-open)
+ * userId + templateKey + category
  */
 exports.getLatestConversation = async (req, res) => {
   try {
-    const { templateKey } = req.params;
+    const { templateKey, category } = req.params; // ADDED category
+
     const userId = new mongoose.Types.ObjectId(req.user.id);
 
+    // ADDED category to query
     const convo = await ResumeConversation.findOne({
       userId,
       templateKey,
+      category,
     }).sort({ updatedAt: -1 });
 
     if (!convo) {
@@ -64,16 +68,19 @@ exports.getLatestConversation = async (req, res) => {
 
 /**
  * GET full conversation
- * userId + templateKey + conversationId
+ * userId + templateKey + category + conversationId
  */
 exports.getConversationById = async (req, res) => {
   try {
-    const { templateKey, conversationId } = req.params;
+    const { templateKey, category, conversationId } = req.params; // ADDED category
+
     const userId = new mongoose.Types.ObjectId(req.user.id);
 
+    // ADDED category to query
     const convo = await ResumeConversation.findOne({
       userId,
       templateKey,
+      category,
       conversationId,
     });
 

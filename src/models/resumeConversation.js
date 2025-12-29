@@ -14,6 +14,7 @@ const resumeConversationSchema = new mongoose.Schema(
   {
     userId: { type: mongoose.Schema.Types.ObjectId, required: true },
     templateKey: { type: String, required: true },
+    category: { type: String, required: true },
     conversationId: { type: String, required: true },
     title: { type: String, required: true },
     messages: { type: [messageSchema], default: [] }
@@ -21,8 +22,9 @@ const resumeConversationSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// ✅ UPDATED: Added category to unique index
 resumeConversationSchema.index(
-  { userId: 1, templateKey: 1, conversationId: 1 },
+  { userId: 1, templateKey: 1, category: 1, conversationId: 1 },
   { unique: true }
 );
 

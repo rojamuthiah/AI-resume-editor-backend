@@ -1,34 +1,17 @@
 const express = require("express");
-const router = express.Router();
-const requireAuth = require("../middlewares/authMiddleware");
-
+const authMiddleware = require("../middlewares/authMiddleware");
 const {
   listConversations,
   getLatestConversation,
   getConversationById,
 } = require("../controllers/conversationController");
 
-/**
- * Conversation routes (ONLY chat history)
- * Mounted at: /api/resume
- */
+const router = express.Router();
 
-router.get(
-  "/:templateKey/conversations",
-  requireAuth,
-  listConversations
-);
+router.use(authMiddleware);
 
-router.get(
-  "/:templateKey/conversations/latest",
-  requireAuth,
-  getLatestConversation
-);
-
-router.get(
-  "/:templateKey/conversations/:conversationId",
-  requireAuth,
-  getConversationById
-);
+router.get("/:templateKey/:category/conversations", listConversations);
+router.get("/:templateKey/:category/conversations/latest", getLatestConversation);
+router.get("/:templateKey/:category/conversations/:conversationId", getConversationById);
 
 module.exports = router;

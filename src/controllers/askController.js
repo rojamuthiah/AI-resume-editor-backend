@@ -36,13 +36,13 @@ exports.askAI = async (req, res) => {
     // Find or create conversation
     let convo = null;
     if (conversationId) {
-      convo = await getConversation(userId, templateKey, conversationId);
+      convo = await getConversation(userId, templateKey, category,conversationId);
       if (!convo) {
         return res.status(404).json({ error: "Conversation not found" });
       }
     } else {
       const title = String(prompt).slice(0, 80);
-      convo = await createConversation(userId, templateKey, title);
+      convo = await createConversation(userId, templateKey, category, title);
     }
 
     // Filter only "ask" type messages and get last 3 conversations (6 messages: 3 user + 3 ai)
