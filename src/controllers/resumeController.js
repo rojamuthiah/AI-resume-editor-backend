@@ -15,6 +15,11 @@ exports.getResume = async (req, res) => {
   try {
     const userId = req.user.id;
     const { templateKey } = req.params;
+    const { category } = req.query;
+
+    if (!category) {
+      return res.status(400).json({ success: false, message: "Category is required" });
+    }
 
     let resume = await UserResume.findOne({ userId, templateKey });
 
@@ -24,6 +29,7 @@ exports.getResume = async (req, res) => {
         "..",
         "..",
         "templates",
+        category,
         templateKey,
         "template.json"
       );
@@ -37,13 +43,15 @@ exports.getResume = async (req, res) => {
       resume = await UserResume.create({
         userId,
         templateKey,
+        category,
         resumeJson: defaultJson
       });
     }
 
     return res.json({
       success: true,
-      resumeJson: resume.resumeJson
+      resumeJson: resume.resumeJson,
+      category: resume.category
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -53,12 +61,16 @@ exports.getResume = async (req, res) => {
 exports.saveResume = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { templateKey, resumeJson } = req.body;
+    const { templateKey, resumeJson, category } = req.body;
+
+    if (!category) {
+      return res.status(400).json({ success: false, message: "Category is required" });
+    }
 
     const updated = await UserResume.findOneAndUpdate(
       { userId, templateKey },
-      { resumeJson, lastUpdated: new Date() },
-      { new: true }
+      { resumeJson, category, lastUpdated: new Date() },
+      { new: true, upsert: true }
     );
 
     return res.json({ success: true, resume: updated });
@@ -70,14 +82,19 @@ exports.saveResume = async (req, res) => {
 exports.renderResume = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { templateKey, previewMode = false, previewData = null } = req.body;
+    const { templateKey, category, previewMode = false, previewData = null } = req.body;
 
-    // Load template
+    if (!category) {
+      return res.status(400).json({ success: false, message: "Category is required" });
+    }
+
+    // Load template from category/templateKey structure
     const templatePath = path.join(
       __dirname,
       "..",
       "..",
       "templates",
+      category,
       templateKey,
       "template.html"
     );

@@ -15,6 +15,7 @@ exports.acceptEdit = async (req, res) => {
   try {
     const {
       templateKey,
+      category,
       section,
       sectionData,
       beforeData
@@ -22,10 +23,10 @@ exports.acceptEdit = async (req, res) => {
 
     const userId = req.user.id;
 
-    if (!templateKey || !section || sectionData === undefined || beforeData === undefined) {
+    if (!templateKey || !category || !section || sectionData === undefined || beforeData === undefined) {
       return res.status(400).json({
         success: false,
-        error: "templateKey, section, sectionData, and beforeData are required"
+        error: "templateKey, category, section, sectionData, and beforeData are required"
       });
     }
 
@@ -40,7 +41,6 @@ exports.acceptEdit = async (req, res) => {
     }
 
     /** 2️⃣ Allow new sections to be added */
-    // If section doesn't exist, initialize it
     if (!(section in resume.resumeJson)) {
       resume.resumeJson[section] = beforeData;
     }
@@ -63,6 +63,7 @@ exports.acceptEdit = async (req, res) => {
 
     /** 5️⃣ Persist update */
     resume.resumeJson = updatedResumeJson;
+    resume.category = category;
     resume.lastUpdated = new Date();
     await resume.save();
 
@@ -86,16 +87,17 @@ exports.revertEdit = async (req, res) => {
   try {
     const {
       templateKey,
+      category,
       section,
       beforeData
     } = req.body;
 
     const userId = req.user.id;
 
-    if (!templateKey || !section || beforeData === undefined) {
+    if (!templateKey || !category || !section || beforeData === undefined) {
       return res.status(400).json({
         success: false,
-        error: "templateKey, section, and beforeData are required"
+        error: "templateKey, category, section, and beforeData are required"
       });
     }
 
@@ -125,6 +127,7 @@ exports.revertEdit = async (req, res) => {
 
     /** 4️⃣ Persist update */
     resume.resumeJson = updatedResumeJson;
+    resume.category = category;
     resume.lastUpdated = new Date();
     await resume.save();
 
