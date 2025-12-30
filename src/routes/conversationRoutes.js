@@ -10,8 +10,11 @@ const router = express.Router();
 
 router.use(authMiddleware);
 
-router.get("/:templateKey/:category/conversations", listConversations);
-router.get("/:templateKey/:category/conversations/latest", getLatestConversation);
-router.get("/:templateKey/:category/conversations/:conversationId", getConversationById);
+/**
+ * Resume-scoped conversations
+ */
+router.get("/:resumeId/conversations", listConversations);
+router.get("/:resumeId/conversations/latest", getLatestConversation);
+router.get("/:resumeId/conversations/:conversationId", getConversationById);
 
 module.exports = router;

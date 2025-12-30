@@ -1,76 +1,91 @@
+const mongoose = require("mongoose");
 const UserResume = require("../models/UserResume");
 
-// Helper to compare sections (handles arrays and objects)
+// ─────────────────────────────────────────────
+// Helper: compare sections safely
+// ─────────────────────────────────────────────
 const sectionsMatch = (current, before) => {
   if (Array.isArray(current) && Array.isArray(before)) {
     return JSON.stringify(current) === JSON.stringify(before);
   }
-  if (typeof current === 'object' && typeof before === 'object') {
+
+  if (
+    typeof current === "object" &&
+    current !== null &&
+    typeof before === "object" &&
+    before !== null
+  ) {
     return JSON.stringify(current) === JSON.stringify(before);
   }
+
   return current === before;
 };
 
+// ─────────────────────────────────────────────
+// ACCEPT EDIT
+// ─────────────────────────────────────────────
 exports.acceptEdit = async (req, res) => {
   try {
-    const {
-      templateKey,
-      category,
-      section,
-      sectionData,
-      beforeData
-    } = req.body;
-
     const userId = req.user.id;
+    const { resumeId, section, sectionData, beforeData } = req.body;
 
-    if (!templateKey || !category || !section || sectionData === undefined || beforeData === undefined) {
+    // Validation
+    if (!resumeId || !section || sectionData === undefined || beforeData === undefined) {
       return res.status(400).json({
         success: false,
-        error: "templateKey, category, section, sectionData, and beforeData are required"
+        error: "resumeId, section, sectionData, and beforeData are required"
       });
     }
 
-    /** 1️⃣ Load resume */
-    const resume = await UserResume.findOne({ userId, templateKey });
+    if (!mongoose.Types.ObjectId.isValid(resumeId)) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid resumeId"
+      });
+    }
+
+    // Fetch resume (ONLY UserResume)
+    const resume = await UserResume.findOne({
+      _id: resumeId,
+      userId
+    });
 
     if (!resume) {
-      return res.status(404).json({ 
+      return res.status(404).json({
         success: false,
-        error: "Resume not found" 
+        error: "Resume not found"
       });
     }
 
-    /** 2️⃣ Allow new sections to be added */
+    // Allow new sections to be added
     if (!(section in resume.resumeJson)) {
       resume.resumeJson[section] = beforeData;
     }
 
-    /** 3️⃣ Validate "before" matches current (stale edit check) */
+    // Stale edit protection
     const currentSection = resume.resumeJson[section];
     if (!sectionsMatch(currentSection, beforeData)) {
       return res.json({
         success: false,
-        message: "This edit is based on an older version of your resume. The section has changed since this edit was suggested.",
-        error: "incompatible_version"
+        error: "incompatible_version",
+        message:
+          "This edit is based on an older version of your resume. The section has changed since this edit was suggested."
       });
     }
 
-    /** 4️⃣ Update ONLY the accepted section */
-    const updatedResumeJson = {
+    // Apply section update
+    resume.resumeJson = {
       ...resume.resumeJson,
       [section]: sectionData
     };
 
-    /** 5️⃣ Persist update */
-    resume.resumeJson = updatedResumeJson;
-    resume.category = category;
     resume.lastUpdated = new Date();
     await resume.save();
 
     return res.json({
       success: true,
       updatedSection: section,
-      resumeJson: updatedResumeJson
+      resumeJson: resume.resumeJson
     });
 
   } catch (err) {
@@ -83,35 +98,42 @@ exports.acceptEdit = async (req, res) => {
   }
 };
 
+// ─────────────────────────────────────────────
+// REVERT EDIT
+// ─────────────────────────────────────────────
 exports.revertEdit = async (req, res) => {
   try {
-    const {
-      templateKey,
-      category,
-      section,
-      beforeData
-    } = req.body;
-
     const userId = req.user.id;
+    const { resumeId, section, beforeData } = req.body;
 
-    if (!templateKey || !category || !section || beforeData === undefined) {
+    // Validation
+    if (!resumeId || !section || beforeData === undefined) {
       return res.status(400).json({
         success: false,
-        error: "templateKey, category, section, and beforeData are required"
+        error: "resumeId, section, and beforeData are required"
       });
     }
 
-    /** 1️⃣ Load resume */
-    const resume = await UserResume.findOne({ userId, templateKey });
+    if (!mongoose.Types.ObjectId.isValid(resumeId)) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid resumeId"
+      });
+    }
+
+    // Fetch resume
+    const resume = await UserResume.findOne({
+      _id: resumeId,
+      userId
+    });
 
     if (!resume) {
-      return res.status(404).json({ 
+      return res.status(404).json({
         success: false,
-        error: "Resume not found" 
+        error: "Resume not found"
       });
     }
 
-    /** 2️⃣ Validate section exists */
     if (!(section in resume.resumeJson)) {
       return res.status(400).json({
         success: false,
@@ -119,22 +141,19 @@ exports.revertEdit = async (req, res) => {
       });
     }
 
-    /** 3️⃣ Revert to "before" state */
-    const updatedResumeJson = {
+    // Revert section
+    resume.resumeJson = {
       ...resume.resumeJson,
       [section]: beforeData
     };
 
-    /** 4️⃣ Persist update */
-    resume.resumeJson = updatedResumeJson;
-    resume.category = category;
     resume.lastUpdated = new Date();
     await resume.save();
 
     return res.json({
       success: true,
       revertedSection: section,
-      resumeJson: updatedResumeJson
+      resumeJson: resume.resumeJson
     });
 
   } catch (err) {

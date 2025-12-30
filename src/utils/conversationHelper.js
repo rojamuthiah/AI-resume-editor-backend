@@ -1,18 +1,15 @@
-const mongoose = require("mongoose");
 const ResumeConversation = require("../models/resumeConversation");
 const { v4: uuidv4 } = require("uuid");
 
 /**
- * Create a brand new conversation with a generated UUID-like id.
+ * Create a brand new conversation for a resume
  */
-const createConversation = async (userId, templateKey, category, title) => {
-  // Generate unique conversation ID
+const createConversation = async (userId, resumeId, title) => {
   const conversationId = uuidv4();
 
   const convo = new ResumeConversation({
     userId,
-    templateKey,
-    category,
+    resumeId,
     conversationId,
     title: title || "New conversation",
     messages: []
@@ -23,29 +20,28 @@ const createConversation = async (userId, templateKey, category, title) => {
 };
 
 /**
- * Fetch a single conversation owned by this user/template.
+ * Fetch a single conversation by resume
  */
-const getConversation = async (userId, templateKey, category, conversationId) => {
+const getConversation = async (userId, resumeId, conversationId) => {
   return await ResumeConversation.findOne({
     userId,
-    templateKey,
-    category,
-    conversationId,
+    resumeId,
+    conversationId
   });
 };
 
 /**
- * List all conversations for a user + template (for dropdown).
+ * List all conversations for a resume (dropdown)
  */
-const listConversations = async (userId, templateKey) => {
+const listConversations = async (userId, resumeId) => {
   const conversations = await ResumeConversation.find({
     userId,
-    templateKey
+    resumeId
   })
     .sort({ updatedAt: -1 })
     .select("conversationId title updatedAt createdAt");
 
-  return conversations.map((c) => ({
+  return conversations.map(c => ({
     id: c.conversationId,
     title: c.title,
     updatedAt: c.updatedAt,
@@ -56,5 +52,5 @@ const listConversations = async (userId, templateKey) => {
 module.exports = {
   createConversation,
   getConversation,
-  listConversations,
+  listConversations
 };
