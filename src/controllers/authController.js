@@ -62,16 +62,18 @@ exports.login = async (req, res) => {
     const token = jwt.sign(
       { userId: user._id },
       process.env.JWT_SECRET,
-      { expiresIn: "30d" } // ✅ JWT valid for 30 days
+      { expiresIn: "30d" }
     );
 
-    // ✅ Store token securely in cookie
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
-    });
+    const isProd = process.env.NODE_ENV === "production";
+
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: isProd,
+        sameSite: isProd ? "none" : "lax",
+        maxAge: 30 * 24 * 60 * 60 * 1000
+      });
+
 
     res.json({
       message: "Logged in successfully",
