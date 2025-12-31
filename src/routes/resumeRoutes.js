@@ -6,7 +6,9 @@ const {
   getResumeById,
   renderResume,
   renameResume,
-  deleteResume
+  deleteResume,
+  renderResumeHtml,
+  downloadResumePdf
 } = require("../controllers/resumeController");
 
 const router = express.Router();
@@ -39,6 +41,8 @@ router.post("/render", renderResume);
 
 router.patch("/:resumeId", renameResume);
 router.delete("/:resumeId", deleteResume);
+router.post("/render-html", renderResumeHtml);
+router.get("/:resumeId/download", downloadResumePdf);
 
 
 

@@ -378,3 +378,123 @@ exports.renameResume = async (req, res) => {
     });
   }
 };
+
+
+
+/**
+ * RENDER RESUME (HTML ONLY)
+ * - Used for live preview (desktop + mobile)
+ */
+exports.renderResumeHtml = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { resumeId, previewData = null } = req.body;
+
+    const resume = await UserResume.findOne({ _id: resumeId, userId });
+    if (!resume) {
+      return res.status(404).json({ success: false });
+    }
+
+    const templatePath = path.join(
+      __dirname,
+      "..",
+      "..",
+      "templates",
+      resume.category,
+      resume.templateKey,
+      "template.html"
+    );
+
+    const template = fs.readFileSync(templatePath, "utf-8");
+
+    const buildResumeData = require("../utils/buildResumeData");
+
+    const resumeData = buildResumeData(
+      resume.resumeJson,
+      previewData
+    );
+
+    const html = Mustache.render(template, resumeData);
+
+    res.json({
+      success: true,
+      html,
+    });
+
+  } catch (err) {
+    console.error("renderResumeHtml error:", err);
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
+
+exports.downloadResumePdf = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { resumeId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(resumeId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid resumeId",
+      });
+    }
+
+    const resume = await UserResume.findOne({ _id: resumeId, userId });
+    if (!resume) {
+      return res.status(404).json({
+        success: false,
+        message: "Resume not found",
+      });
+    }
+
+    const templatePath = path.join(
+      __dirname,
+      "..",
+      "..",
+      "templates",
+      resume.category,
+      resume.templateKey,
+      "template.html"
+    );
+
+    if (!fs.existsSync(templatePath)) {
+      return res.status(404).json({
+        success: false,
+        message: "Template HTML not found",
+      });
+    }
+
+    const template = fs.readFileSync(templatePath, "utf-8");
+
+    const buildResumeData = require("../utils/buildResumeData");
+
+    const resumeData = buildResumeData(resume.resumeJson);
+
+    const html = Mustache.render(template, resumeData);
+    const pdfBuffer = await generatePDF(html);
+
+   
+    const safeName = resume.name
+      .trim()
+      .replace(/[^a-z0-9]/gi, "_")
+      .toLowerCase();
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${safeName}.pdf"`
+    );
+
+    res.send(pdfBuffer);
+  } catch (err) {
+    console.error("Download Resume PDF Error:", err);
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
