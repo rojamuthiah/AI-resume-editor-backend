@@ -10,13 +10,24 @@ const conversationroutes = require("./routes/conversationRoutes");
 
 const app = express();
 
-app.use(cors({
-  origin: true,        
-  credentials: true   
-}));
+app.use(
+  cors({
+    origin: true,
+    credentials: true
+  })
+);
 
 app.use(cookieParser());
 app.use(express.json());
+
+// Health endpoint (keep warm)
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString()
+  });
+});
 
 app.use("/api/auth", authRoutes);
 app.use("/templates", express.static("templates"));

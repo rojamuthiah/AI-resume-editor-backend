@@ -32,7 +32,6 @@ Thumbs.db
 
 # Generated PDFs/HTML
 *.pdf
-*.html
 *.png
 
 # Prisma (if you use it)

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      font-size: 13px;
+      color: #111;
+      line-height: 1.4;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 28px;
+      margin-bottom: 6px;
+    }
+
+    .contact {
+      text-align: center;
+      font-size: 12px;
+      margin-bottom: 16px;
+    }
+
+    h2 {
+      margin-top: 22px;
+      font-size: 16px;
+      text-transform: uppercase;
+      border-bottom: 1px solid #000;
+      padding-bottom: 4px;
+    }
+
+    .summary {
+      margin-top: 12px;
+      font-size: 13px;
+    }
+
+    .subheading {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+
+    .role {
+      font-style: italic;
+      font-size: 12px;
+    }
+
+    ul {
+      margin: 6px 0 10px 16px;
+      padding: 0;
+    }
+
+    li {
+      margin-bottom: 4px;
+    }
+
+    /* Diff Styles - Git-like */
+    .diff-added {
+      background-color: #d1f4d1 !important;
+      border-left: 3px solid #28a745;
+      padding-left: 8px;
+      margin: 4px 0;
+    }
+
+    .diff-removed {
+      background-color: #fdd;
+      border-left: 3px solid #dc3545;
+      padding-left: 8px;
+      margin: 4px 0;
+      text-decoration: line-through;
+      opacity: 0.7;
+    }
+
+    .diff-modified {
+      background-color: #fff3cd;
+      border-left: 3px solid #ffc107;
+      padding-left: 8px;
+      margin: 4px 0;
+    }
+
+    .diff-item {
+      padding: 8px;
+      margin: 6px 0;
+      border-radius: 3px;
+    }
+
+    li.diff-added::before {
+      content: "+ ";
+      color: #28a745;
+      font-weight: bold;
+    }
+
+    li.diff-removed::before {
+      content: "- ";
+      color: #dc3545;
+      font-weight: bold;
+    }
+
+    li.diff-modified::before {
+      content: "~ ";
+      color: #ffc107;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <h1>{{name}}</h1>
+  <div class="contact">
+    {{email}} | {{phone}}
+    {{#portfolio}} | <a href="{{portfolio}}">{{portfolio}}</a>{{/portfolio}}
+    {{#github}} | <a href="{{github}}">{{github}}</a>{{/github}}
+  </div>
+
+  {{#hasSummary}}
+  <h2>Summary</h2>
+  <div class="summary">
+    {{summary}}
+  </div>
+  {{/hasSummary}}
+
+  {{#hasEducation}}
+  <h2>Education</h2>
+  {{#education}}
+  <div class="subheading">
+    <div>
+      <strong>{{institution}}</strong><br/>
+      {{degree}}{{#gpa}} (GPA: {{gpa}}){{/gpa}}
+    </div>
+    <div style="text-align:right;">
+      {{start}} – {{end}}<br/>
+      <em>{{location}}</em>
+    </div>
+  </div>
+  {{/education}}
+  {{/hasEducation}}
+
+  {{#hasSkills}}
+  <h2>Skills Summary</h2>
+  <ul>
+    {{#skillsArray}}
+      <li><strong>{{category}}:</strong> {{values}}</li>
+    {{/skillsArray}}
+  </ul>
+  {{/hasSkills}}
+
+  {{#hasExperience}}
+  <h2>Experience</h2>
+  {{#experience}}
+  <div class="subheading {{#_diffStatus}}diff-{{_diffStatus}}{{/_diffStatus}}">
+    <div>
+      <strong>{{company}}</strong><br/>
+      <span class="role">{{role}}</span>
+    </div>
+    <div style="text-align:right;">
+      {{start}} – {{end}}<br/>
+      <em>{{location}}</em>
+    </div>
+  </div>
+  <ul>
+    {{#points}}
+      <li class="{{#_diffStatus}}diff-{{_diffStatus}}{{/_diffStatus}}">{{.}}</li>
+    {{/points}}
+  </ul>
+  {{/experience}}
+  {{/hasExperience}}
+
+  {{#hasProjects}}
+  <h2>Projects</h2>
+  {{#projects}}
+  <p class="diff-item {{#_diffStatus}}diff-{{_diffStatus}}{{/_diffStatus}}">
+    <strong>{{title}}:</strong> {{description}} ({{tech}})
+  </p>
+  {{/projects}}
+  {{/hasProjects}}
+
+  {{#hasPublications}}
+  <h2>Publications</h2>
+  {{#publications}}
+  <p class="diff-item {{#_diffStatus}}diff-{{_diffStatus}}{{/_diffStatus}}">
+    <strong>{{title}}:</strong> {{description}}
+  </p>
+  {{/publications}}
+  {{/hasPublications}}
+
+  {{#hasAwards}}
+  <h2>Honors & Awards</h2>
+  <ul>
+    {{#awards}}
+      <li class="{{#_diffStatus}}diff-{{_diffStatus}}{{/_diffStatus}}">{{.}}</li>
+    {{/awards}}
+  </ul>
+  {{/hasAwards}}
+
+  {{#hasVolunteer}}
+  <h2>Volunteer Experience</h2>
+  {{#volunteer}}
+  <div class="subheading diff-item {{#_diffStatus}}diff-{{_diffStatus}}{{/_diffStatus}}">
+    <div>
+      <strong>{{role}}</strong><br/>
+      {{org}}
+    </div>
+    <div style="text-align:right;">
+      {{start}} – {{end}}<br/>
+      <em>{{location}}</em>
+    </div>
+  </div>
+  <ul>
+    <li>{{description}}</li>
+  </ul>
+  {{/volunteer}}
+  {{/hasVolunteer}}
+
+</body>
+</html>
