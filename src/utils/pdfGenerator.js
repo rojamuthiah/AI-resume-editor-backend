@@ -94,8 +94,8 @@ async function generatePDF(html) {
       timeout: 60000  // Increased from default 30s to 60s
     });
 
-    // Give it a moment to render
-    await page.waitForTimeout(1000);
+    // Give it a moment to render (using standard setTimeout)
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
     return await page.pdf({
       format: "A4",
