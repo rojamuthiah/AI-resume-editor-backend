@@ -4,7 +4,9 @@ const {
   createResume,
   getAllResumes,
   getResumeById,
-  renderResume
+  renderResume,
+  renameResume,
+  deleteResume
 } = require("../controllers/resumeController");
 
 const router = express.Router();
@@ -34,5 +36,10 @@ router.get("/:resumeId", getResumeById);
  * POST /resume/render
  */
 router.post("/render", renderResume);
+
+router.patch("/:resumeId", renameResume);
+router.delete("/:resumeId", deleteResume);
+
+
 
 module.exports = router;

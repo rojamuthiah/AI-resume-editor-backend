@@ -278,3 +278,103 @@ exports.renderResume = async (req, res) => {
     });
   }
 };
+
+
+
+/**
+ * DELETE RESUME
+ * - Deletes a resume by ID (owner only)
+ */
+exports.deleteResume = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { resumeId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(resumeId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid resumeId"
+      });
+    }
+
+    const deleted = await UserResume.findOneAndDelete({
+      _id: resumeId,
+      userId
+    });
+
+    if (!deleted) {
+      return res.status(404).json({
+        success: false,
+        message: "Resume not found"
+      });
+    }
+
+    return res.json({
+      success: true,
+      message: "Resume deleted"
+    });
+
+  } catch (err) {
+    console.error("Delete Resume Error:", err);
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
+  }
+};
+
+
+/**
+ * RENAME RESUME
+ * - Updates name & description
+ */
+exports.renameResume = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { resumeId } = req.params;
+    const { name, description } = req.body;
+
+    if (!name) {
+      return res.status(400).json({
+        success: false,
+        message: "Name is required"
+      });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(resumeId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid resumeId"
+      });
+    }
+
+    const resume = await UserResume.findOneAndUpdate(
+      { _id: resumeId, userId },
+      {
+        name,
+        description: description || "",
+        lastUpdated: new Date()
+      },
+      { new: true }
+    );
+
+    if (!resume) {
+      return res.status(404).json({
+        success: false,
+        message: "Resume not found"
+      });
+    }
+
+    return res.json({
+      success: true,
+      resume
+    });
+
+  } catch (err) {
+    console.error("Rename Resume Error:", err);
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
+  }
+};
