@@ -37,7 +37,11 @@ app.use(
 app.use(cookieParser());
 app.use(express.json());
 
-// Health endpoint (keep warm)
+app.head("/api/health", (req, res) => {
+  res.sendStatus(200);
+});
+
+// Health endpoint
 app.get("/health", (req, res) => {
   res.status(200).json({
     status: "ok",
@@ -45,6 +49,8 @@ app.get("/health", (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
+
+
 
 app.use("/api/auth", authRoutes);
 app.use("/templates", express.static("templates"));
