@@ -6,16 +6,28 @@ const Mustache = require("mustache");
 const UserResume = require("../models/UserResume");
 const generatePDF = require("../utils/pdfGenerator");
 
+const {
+  extractTextFromDocument
+} = require("../utils/documentTextExtractor");
+
+const {
+  generateResumeFromDocument
+} = require("../utils/generateResume");
+
+
 /**
  * CREATE RESUME
  * - Creates a resume from template.json
  * - Returns resumeId
  */
+
 exports.createResume = async (req, res) => {
   try {
     const userId = req.user.id;
     const { templateKey, category, name, description } = req.body;
+    const file = req.file; // uploaded resume (optional)
 
+    /* ================= VALIDATION ================= */
     if (!templateKey || !category || !name) {
       return res.status(400).json({
         success: false,
@@ -23,6 +35,7 @@ exports.createResume = async (req, res) => {
       });
     }
 
+    /* ================= LOAD DEFAULT TEMPLATE JSON ================= */
     const templateJsonPath = path.join(
       __dirname,
       "..",
@@ -40,17 +53,30 @@ exports.createResume = async (req, res) => {
       });
     }
 
-    const defaultJson = JSON.parse(
+    let resumeJson = JSON.parse(
       fs.readFileSync(templateJsonPath, "utf-8")
     );
 
+    /* ================= FILE → TEXT → GEMINI ================= */
+    if (file) {
+      const extractedText = await extractTextFromDocument(file);
+
+      if (extractedText && extractedText.trim().length > 0) {
+        resumeJson = await generateResumeFromDocument({
+          defaultJson: resumeJson,
+          documentText: extractedText
+        });
+      }
+    }
+
+    /* ================= SAVE RESUME ================= */
     const resume = await UserResume.create({
       userId,
       templateKey,
       category,
       name,
       description: description || "",
-      resumeJson: defaultJson
+      resumeJson
     });
 
     return res.status(201).json({
@@ -60,13 +86,13 @@ exports.createResume = async (req, res) => {
 
   } catch (err) {
     console.error("Create Resume Error:", err);
-    res.status(500).json({
+
+    return res.status(500).json({
       success: false,
-      message: err.message
+      message: err.message || "Internal server error"
     });
   }
 };
-
 
 /**
  * GET ALL RESUMES

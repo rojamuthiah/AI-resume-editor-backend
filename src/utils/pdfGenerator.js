@@ -88,25 +88,28 @@ async function generatePDF(html) {
   try {
     const page = await browser.newPage();
     
-    // Increase timeout and use a more lenient wait condition
+    // Set content with print media type
+    await page.emulateMediaType('print');
+    
     await page.setContent(html, { 
-      waitUntil: "domcontentloaded",  // Changed from "networkidle0"
-      timeout: 60000  // Increased from default 30s to 60s
+      waitUntil: "domcontentloaded",
+      timeout: 60000
     });
 
-    // Give it a moment to render (using standard setTimeout)
+    // Give it a moment to render
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     return await page.pdf({
       format: "A4",
       printBackground: true,
       margin: {
-        top: "15mm",
-        bottom: "15mm",
-        left: "15mm",
-        right: "15mm",
+        top: "0mm",      // Changed from 15mm
+        bottom: "0mm",   // Changed from 15mm
+        left: "0mm",     // Changed from 15mm
+        right: "0mm",    // Changed from 15mm
       },
-      timeout: 60000  // Add timeout here too
+      preferCSSPageSize: true,  // Use CSS @page settings
+      timeout: 60000
     });
   } finally {
     await browser.close();

@@ -1,5 +1,7 @@
 const express = require("express");
 const authMiddleware = require("../middlewares/authMiddleware");
+const upload = require("../middlewares/upload");
+
 const {
   createResume,
   getAllResumes,
@@ -16,13 +18,17 @@ const router = express.Router();
 router.use(authMiddleware);
 
 /**
- * Create a new resume
+ * Create a new resume (supports file upload)
  * POST /resume
  */
-router.post("/", createResume);
+router.post(
+  "/",
+  upload.single("resumeFile"),
+  createResume
+);
 
 /**
- * List all resumes for user (filtered by templateKey + category via query)
+ * List all resumes for user
  * GET /resume?templateKey=...&category=...
  */
 router.get("/", getAllResumes);
@@ -43,7 +49,5 @@ router.patch("/:resumeId", renameResume);
 router.delete("/:resumeId", deleteResume);
 router.post("/render-html", renderResumeHtml);
 router.get("/:resumeId/download", downloadResumePdf);
-
-
 
 module.exports = router;

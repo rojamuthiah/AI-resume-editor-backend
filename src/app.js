@@ -10,8 +10,9 @@ const conversationroutes = require("./routes/conversationRoutes");
 
 const app = express();
 
-const allowedOrigins = [
-  "http://localhost:5173",
+  const allowedOrigins = [
+    "http://localhost:5173",
+    "http://localhost:5174",
   "https://job-editor-frontend.vercel.app" // add when deployed
 ];
 
@@ -28,7 +29,7 @@ app.use(
       return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
     exposedHeaders: ["Content-Disposition"],
   })
