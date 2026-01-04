@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    /* ===============================
+       GLOBAL NORMALIZATION
+       =============================== */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      font-size: 11.5px;
+      color: #111;
+      line-height: 17px;
+      background: #eef3fb;
+    }
+
+    /* ===============================
+       SCREEN (HTML PREVIEW)
+       =============================== */
+    @media screen {
+      .page {
+        max-width: 794px;
+        width: 100%;
+        min-height: 1123px;
+        margin: 24px auto;
+        padding: 28px 32px;
+        background: white;
+        box-shadow: 0 0 0 1px #ddd;
+      }
+    }
+
+    /* ===============================
+       PRINT / PDF
+       =============================== */
+    @media print {
+      body {
+        background: white;
+      }
+
+      .page {
+        width: auto;
+        min-height: auto;
+        margin: 0;
+        padding: 28px 32px;
+        box-shadow: none;
+      }
+    }
+
+    /* ===============================
+       PDF PAGE SIZE
+       =============================== */
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    /* ===============================
+       TYPOGRAPHY
+       =============================== */
+    h1 {
+      text-align: center;
+      font-size: 24px;
+      line-height: 28px;
+      margin-bottom: 4px;
+    }
+
+    h2 {
+      font-size: 14px;
+      line-height: 18px;
+      text-transform: uppercase;
+      border-bottom: 1px solid #000;
+      padding-top: 12px;
+      padding-bottom: 3px;
+      margin: 0;
+      page-break-after: avoid;
+      break-after: avoid;
+    }
+
+    .contact {
+      text-align: center;
+      font-size: 10.5px;
+      margin-bottom: 10px;
+    }
+
+    .summary {
+      margin-top: 8px;
+      font-size: 11.5px;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    .subheading {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 7px;
+      font-size: 11.5px;
+      page-break-inside: avoid;
+      break-inside: avoid;
+      page-break-after: avoid;
+      break-after: avoid;
+    }
+
+    .role {
+      font-style: italic;
+      font-size: 10.5px;
+    }
+
+    /* ===============================
+       SKILLS SECTION (NO BULLETS)
+       =============================== */
+    .skills-list {
+      margin-top: 8px;
+    }
+
+    .skill-item {
+      margin-bottom: 3px;
+      line-height: 17px;
+      font-size: 11.5px;
+    }
+
+    /* ===============================
+       LISTS
+       =============================== */
+    ul {
+      margin: 4px 0 6px 0;
+      padding-left: 17px;
+    }
+
+    li {
+      margin-bottom: 3px;
+      line-height: 17px;
+      font-size: 11.5px;
+    }
+
+    /* ===============================
+       PARAGRAPHS
+       =============================== */
+    p {
+      font-size: 11.5px;
+      line-height: 17px;
+      margin: 5px 0;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    .diff-item {
+      padding: 8px;
+      margin: 6px 0;
+      border-radius: 3px;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    /* ===============================
+       DIFF STYLES
+       =============================== */
+    .diff-added {
+      background-color: #d1f4d1 !important;
+      border-left: 3px solid #28a745;
+      padding-left: 8px;
+      margin: 4px 0;
+    }
+
+    .diff-removed {
+      background-color: #fdd;
+      border-left: 3px solid #dc3545;
+      padding-left: 8px;
+      margin: 4px 0;
+      text-decoration: line-through;
+      opacity: 0.7;
+    }
+
+    .diff-modified {
+      background-color: #fff3cd;
+      border-left: 3px solid #ffc107;
+      padding-left: 8px;
+      margin: 4px 0;
+    }
+
+    li.diff-added::before {
+      content: "+ ";
+      color: #28a745;
+      font-weight: bold;
+    }
+
+    li.diff-removed::before {
+      content: "- ";
+      color: #dc3545;
+      font-weight: bold;
+    }
+
+    li.diff-modified::before {
+      content: "~ ";
+      color: #ffc107;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+
+    <!-- HEADER -->
+    <h1>{{name}}</h1>
+    <div class="contact">
+      {{email}} | {{phone}}
+      {{#portfolio}} | <a href="{{portfolio}}">{{portfolio}}</a>{{/portfolio}}
+      {{#github}} | <a href="{{github}}">{{github}}</a>{{/github}}
+    </div>
+
+    {{#hasSummary}}
+    <h2>Summary</h2>
+    <div class="summary">{{summary}}</div>
+    {{/hasSummary}}
+
+    {{#hasEducation}}
+    <h2>Education</h2>
+    {{#education}}
+    <div class="subheading">
+      <div>
+        <strong>{{institution}}</strong><br/>
+        {{degree}}{{#gpa}} (GPA: {{gpa}}){{/gpa}}
+      </div>
+      <div style="text-align:right;">
+        {{start}} – {{end}}<br/>
+        <em>{{location}}</em>
+      </div>
+    </div>
+    {{/education}}
+    {{/hasEducation}}
+
+    {{#hasSkills}}
+    <h2>Skills Summary</h2>
+    <div class="skills-list">
+      {{#skillsArray}}
+        <div class="skill-item"><strong>{{category}}:</strong> {{values}}</div>
+      {{/skillsArray}}
+    </div>
+    {{/hasSkills}}
+
+    {{#hasExperience}}
+    <h2>Experience</h2>
+    {{#experience}}
+    <div class="subheading {{#_diffStatus}}diff-{{_diffStatus}}{{/_diffStatus}}">
+      <div>
+        <strong>{{company}}</strong><br/>
+        <span class="role">{{role}}</span>
+      </div>
+      <div style="text-align:right;">
+        {{start}} – {{end}}<br/>
+        <em>{{location}}</em>
+      </div>
+    </div>
+    <ul>
+      {{#points}}
+        <li class="{{#_diffStatus}}diff-{{_diffStatus}}{{/_diffStatus}}">{{.}}</li>
+      {{/points}}
+    </ul>
+    {{/experience}}
+    {{/hasExperience}}
+
+    {{#hasProjects}}
+    <h2>Projects</h2>
+    {{#projects}}
+    <p class="diff-item {{#_diffStatus}}diff-{{_diffStatus}}{{/_diffStatus}}">
+      <strong>{{title}}:</strong> {{description}} ({{tech}})
+    </p>
+    {{/projects}}
+    {{/hasProjects}}
+
+    {{#hasPublications}}
+    <h2>Publications</h2>
+    {{#publications}}
+    <p class="diff-item {{#_diffStatus}}diff-{{_diffStatus}}{{/_diffStatus}}">
+      <strong>{{title}}:</strong> {{description}}
+    </p>
+    {{/publications}}
+    {{/hasPublications}}
+
+    {{#hasAwards}}
+    <h2>Honors & Awards</h2>
+    <ul>
+      {{#awards}}
+        <li class="{{#_diffStatus}}diff-{{_diffStatus}}{{/_diffStatus}}">{{.}}</li>
+      {{/awards}}
+    </ul>
+    {{/hasAwards}}
+
+    {{#hasVolunteer}}
+    <h2>Volunteer Experience</h2>
+    {{#volunteer}}
+    <div class="subheading diff-item {{#_diffStatus}}diff-{{_diffStatus}}{{/_diffStatus}}">
+      <div>
+        <strong>{{role}}</strong><br/>
+        {{org}}
+      </div>
+      <div style="text-align:right;">
+        {{start}} – {{end}}<br/>
+        <em>{{location}}</em>
+      </div>
+    </div>
+    <ul>
+      <li>{{description}}</li>
+    </ul>
+    {{/volunteer}}
+    {{/hasVolunteer}}
+
+  </div>
+</body>
+</html>

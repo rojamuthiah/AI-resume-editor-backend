@@ -39,3 +39,6 @@ prisma/*.db
 
 # Lock files backup
 package-lock.json.orig
+
+*.ini
+seed.js

@@ -1,0 +1,118 @@
+{
+    "name": "Michael Chen",
+    "email": "michael.chen@email.com",
+    "phone": "(555) 456-7890",
+    "portfolio": "https://linkedin.com/in/michaelchen",
+    "github": "",
+    "summary": "Strategic finance executive with 12+ years of experience in financial planning, analysis, and corporate strategy. Proven track record of driving profitable growth, optimizing capital structure, and leading cross-functional teams through acquisitions, fundraising, and operational transformations for both public and private companies.",
+  
+    "education": [
+      {
+        "institution": "University of Pennsylvania, Wharton School",
+        "location": "Philadelphia, PA",
+        "degree": "Master of Business Administration (MBA), Finance Concentration",
+        "gpa": "",
+        "start": "2014",
+        "end": "2016"
+      },
+      {
+        "institution": "University of California, Berkeley",
+        "location": "Berkeley, CA",
+        "degree": "Bachelor of Science in Economics",
+        "gpa": "3.85",
+        "start": "2008",
+        "end": "2012"
+      }
+    ],
+  
+    "skills": {
+      "Finance": ["Financial Planning & Analysis", "Corporate Finance", "M&A", "Budgeting & Forecasting", "Capital Markets", "Treasury"],
+      "Accounting": ["GAAP", "IFRS", "Financial Reporting", "Internal Controls", "SOX Compliance", "Audit Management", "Revenue Recognition"],
+      "Tools": ["Oracle Financials", "SAP", "NetSuite", "Adaptive Insights", "Tableau", "Power BI", "Bloomberg Terminal", "Excel (Advanced)"],
+      "Core Competencies": ["Strategic Planning", "Investor Relations", "Risk Management", "Business Valuation", "Team Leadership"]
+    },
+  
+    "certifications": [
+      "Chartered Financial Analyst (CFA)",
+      "Certified Public Accountant (CPA) - Active License"
+    ],
+  
+    "experience": [
+      {
+        "company": "Apex Technologies Inc.",
+        "location": "New York, NY",
+        "role": "Vice President of Finance",
+        "start": "Jan 2021",
+        "end": "Present",
+        "points": [
+          "Lead finance function for $500M revenue SaaS company, managing team of 15 across FP&A, accounting, tax, and treasury",
+          "Drove EBITDA margin improvement from 18% to 28% through pricing optimization, cost reduction initiatives, and operational efficiency programs",
+          "Led Series D fundraising process, securing $85M in growth capital with participation from top-tier venture firms at 35% valuation increase",
+          "Built comprehensive financial planning infrastructure including 3-statement models, departmental budgets, and KPI dashboards used by executive team for strategic decisions",
+          "Managed two strategic acquisitions totaling $120M, conducting due diligence, negotiating deal terms, and leading post-merger integration"
+        ]
+      },
+      {
+        "company": "Sterling Financial Group",
+        "location": "San Francisco, CA",
+        "role": "Senior Finance Manager",
+        "start": "Jul 2018",
+        "end": "Dec 2020",
+        "points": [
+          "Managed financial planning and analysis for $2.3B asset management firm with 200+ employees",
+          "Improved forecast accuracy from 82% to 96% by implementing rolling forecasts and driver-based planning models",
+          "Identified $8M in annual cost savings opportunities through vendor consolidation and process automation initiatives",
+          "Led quarterly board presentations and earnings preparation, communicating financial results and strategic recommendations to board members and investors"
+        ]
+      },
+      {
+        "company": "Deloitte & Touche LLP",
+        "location": "Los Angeles, CA",
+        "role": "Senior Consultant, Audit & Assurance",
+        "start": "Sep 2016",
+        "end": "Jun 2018",
+        "points": [
+          "Led audit engagements for public and private companies ranging from $100M to $5B in revenue across technology, retail, and manufacturing sectors",
+          "Managed teams of 5-8 staff accountants, providing mentorship and conducting performance reviews",
+          "Identified and communicated internal control deficiencies and recommended process improvements to CFOs and audit committees",
+          "Specialized in revenue recognition under ASC 606 and complex financial instruments valuation"
+        ]
+      },
+      {
+        "company": "Goldman Sachs",
+        "location": "New York, NY",
+        "role": "Investment Banking Analyst",
+        "start": "Jul 2012",
+        "end": "Aug 2014",
+        "points": [
+          "Executed M&A transactions and capital raises totaling $3.2B across technology and healthcare sectors",
+          "Built detailed financial models including DCF, LBO, and merger consequences analyses for client presentations",
+          "Conducted industry research and competitive analysis to support strategic advisory services",
+          "Prepared pitch books, management presentations, and Board materials for C-level executives"
+        ]
+      }
+    ],
+  
+    "projects": [
+      {
+        "title": "IPO Readiness Initiative",
+        "description": "Led cross-functional effort to prepare company for public markets, implementing SOX controls, establishing audit committee, and building investor relations infrastructure. Successfully achieved SOX compliance 6 months ahead of target timeline.",
+        "tech": "Project Management, SOX Compliance, Process Documentation"
+      },
+      {
+        "title": "ERP System Implementation",
+        "description": "Project lead for $2.5M Oracle Financials implementation affecting 150+ finance users. Designed chart of accounts, configured financial reporting, and managed data migration from legacy systems with 99.8% accuracy.",
+        "tech": "System Implementation, Change Management, Cross-functional Leadership"
+      }
+    ],
+  
+    "publications": [],
+  
+    "awards": [
+      "CFO of the Year Finalist, San Francisco Business Times (2023)",
+      "40 Under 40 Finance Professionals, Finance Magazine (2022)",
+      "Outstanding Achievement Award, Deloitte (2017)"
+    ],
+  
+    "volunteer": []
+  }

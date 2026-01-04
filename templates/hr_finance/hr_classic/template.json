@@ -1,0 +1,107 @@
+{
+    "name": "Jennifer Thompson",
+    "email": "jennifer.thompson@email.com",
+    "phone": "(555) 789-0123",
+    "portfolio": "https://linkedin.com/in/jthompson",
+    "github": "",
+    "summary": "Strategic HR leader with 10+ years of experience driving organizational transformation and talent strategy. Proven expertise in building scalable HR infrastructure, enhancing employee engagement, and aligning people operations with business objectives across technology and Fortune 500 companies.",
+  
+    "education": [
+      {
+        "institution": "Cornell University",
+        "location": "Ithaca, NY",
+        "degree": "Master of Industrial and Labor Relations (MILR)",
+        "gpa": "",
+        "start": "2012",
+        "end": "2014"
+      },
+      {
+        "institution": "University of Michigan",
+        "location": "Ann Arbor, MI",
+        "degree": "Bachelor of Arts in Psychology",
+        "gpa": "3.7",
+        "start": "2008",
+        "end": "2012"
+      }
+    ],
+  
+    "skills": {
+      "HR Strategy": ["Talent Acquisition", "Performance Management", "Succession Planning", "Organizational Design", "Change Management"],
+      "Compliance": ["Employment Law", "FMLA", "ADA", "EEOC", "Workers' Compensation", "HR Audits", "Policy Development"],
+      "Tools": ["Workday", "BambooHR", "Greenhouse", "LinkedIn Recruiter", "ADP", "SAP SuccessFactors", "Tableau"],
+      "Core Competencies": ["Employee Relations", "Compensation & Benefits", "Training & Development", "DEI Initiatives"]
+    },
+  
+    "certifications": [
+      "Senior Professional in Human Resources (SPHR)",
+      "SHRM Senior Certified Professional (SHRM-SCP)",
+      "Certified Compensation Professional (CCP)"
+    ],
+  
+    "experience": [
+      {
+        "company": "InnovateTech Corporation",
+        "location": "Seattle, WA",
+        "role": "Director of Human Resources",
+        "start": "Mar 2020",
+        "end": "Present",
+        "points": [
+          "Lead HR operations for 850+ employee technology company, managing team of 8 HR professionals across talent acquisition, employee relations, and compensation",
+          "Reduced time-to-hire by 40% through implementation of structured interview process and applicant tracking system optimization",
+          "Increased employee retention rate from 78% to 91% through enhanced onboarding program, career development pathways, and competitive compensation analysis",
+          "Designed and launched company-wide performance management system using Workday, improving goal alignment and increasing engagement scores by 35%",
+          "Spearheaded DEI initiative resulting in 60% increase in diverse candidate pipeline and establishment of 4 employee resource groups"
+        ]
+      },
+      {
+        "company": "Global Solutions Inc.",
+        "location": "Chicago, IL",
+        "role": "Senior HR Business Partner",
+        "start": "Jul 2017",
+        "end": "Feb 2020",
+        "points": [
+          "Partnered with C-suite executives and department heads supporting 500+ employees across Engineering, Sales, and Operations",
+          "Led organizational restructuring initiative affecting 200+ employees, ensuring smooth transitions and maintaining 95% retention of key talent",
+          "Developed leadership training program that improved manager effectiveness scores by 42% and reduced employee complaints by 30%",
+          "Managed annual compensation cycle with $45M budget, conducting market analysis and ensuring internal equity while staying within budget"
+        ]
+      },
+      {
+        "company": "Meridian Consulting Group",
+        "location": "Boston, MA",
+        "role": "HR Generalist",
+        "start": "Aug 2014",
+        "end": "Jun 2017",
+        "points": [
+          "Managed full-cycle recruitment for professional and technical roles, filling 120+ positions with 92% hiring manager satisfaction rate",
+          "Administered benefits programs for 300+ employees, achieving 98% enrollment completion and reducing benefits costs by 12%",
+          "Conducted workplace investigations and resolved employee relations issues, maintaining compliance with federal and state regulations",
+          "Created HR metrics dashboard providing leadership with real-time insights on turnover, hiring, and engagement trends"
+        ]
+      }
+    ],
+  
+    "projects": [
+      {
+        "title": "HRIS Implementation",
+        "description": "Led selection and implementation of Workday HRIS system, migrating 850+ employee records and integrating payroll, benefits, and performance management modules. Project completed 2 weeks ahead of schedule with zero data loss.",
+        "tech": "Project Management, Vendor Management, Change Management"
+      },
+      {
+        "title": "Remote Work Policy Development",
+        "description": "Designed comprehensive remote work policy and hybrid workplace guidelines during pandemic transition, achieving 89% employee satisfaction while maintaining productivity and collaboration standards.",
+        "tech": "Policy Development, Stakeholder Management, Communication Strategy"
+      }
+    ],
+  
+    "publications": [],
+  
+    "awards": [
+      "HR Excellence Award for Innovation in Talent Strategy, InnovateTech (2023)",
+      "40 Under 40 HR Professionals to Watch, HR Magazine (2022)",
+      "Best Places to Work Award - team contributor, InnovateTech (2021, 2022, 2023)"
+    ],
+  
+    "volunteer": []
+}
+  
