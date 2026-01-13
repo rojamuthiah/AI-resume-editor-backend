@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      margin: 0;
+      font-size: 11px;
+      color: #1a1a1a;
+      line-height: 17px;
+      background: #fafafa;
+    }
+
+    @media screen {
+      .page {
+        max-width: 794px;
+        width: 100%;
+        min-height: 1123px;
+        margin: 24px auto;
+        padding: 40px 48px;
+        background: white;
+        box-shadow: 0 0 1px rgba(0,0,0,0.15);
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+      .page {
+        width: auto;
+        min-height: auto;
+        margin: 0;
+        padding: 40px 48px;
+        box-shadow: none;
+      }
+    }
+
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 400;
+      margin: 0 0 6px 0;
+      color: #1a1a1a;
+      letter-spacing: -0.5px;
+    }
+
+    .contact {
+      font-size: 10.5px;
+      color: #666;
+      margin-bottom: 24px;
+      font-family: 'Arial', sans-serif;
+    }
+
+    .contact a {
+      color: #0066cc;
+      text-decoration: none;
+    }
+
+    h2 {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin: 24px 0 12px 0;
+      padding-bottom: 4px;
+      border-bottom: 1px solid #1a1a1a;
+      color: #1a1a1a;
+      page-break-after: avoid;
+    }
+
+    h2:first-of-type {
+      margin-top: 16px;
+    }
+
+    .summary {
+      font-size: 11.5px;
+      line-height: 18px;
+      margin-bottom: 8px;
+      color: #333;
+      font-family: 'Arial', sans-serif;
+      text-align: justify;
+      page-break-inside: avoid;
+    }
+
+    .item {
+      margin-bottom: 14px;
+      page-break-inside: avoid;
+    }
+
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 2px;
+    }
+
+    .item-title {
+      font-weight: 700;
+      font-size: 11.5px;
+      color: #1a1a1a;
+      font-family: 'Arial', sans-serif;
+    }
+
+    .item-date {
+      font-size: 10px;
+      color: #666;
+      font-family: 'Arial', sans-serif;
+      white-space: nowrap;
+    }
+
+    .item-subtitle {
+      font-style: italic;
+      font-size: 11px;
+      color: #444;
+      margin-bottom: 1px;
+    }
+
+    .item-location {
+      font-size: 10px;
+      color: #888;
+      margin-bottom: 6px;
+      font-family: 'Arial', sans-serif;
+    }
+
+    ul {
+      margin: 6px 0 0 0;
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 3px;
+      font-size: 11px;
+      line-height: 17px;
+      font-family: 'Arial', sans-serif;
+      color: #333;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 16px;
+      margin-top: 8px;
+    }
+
+    .skill-item {
+      font-size: 11px;
+      font-family: 'Arial', sans-serif;
+      line-height: 16px;
+    }
+
+    .skill-item strong {
+      color: #1a1a1a;
+      font-size: 10.5px;
+    }
+
+    .skill-item span {
+      color: #444;
+    }
+
+    .project, .publication {
+      margin-bottom: 10px;
+      font-size: 11px;
+      font-family: 'Arial', sans-serif;
+      line-height: 17px;
+      color: #333;
+      page-break-inside: avoid;
+    }
+
+    .project strong, .publication strong {
+      color: #1a1a1a;
+      font-size: 11px;
+    }
+
+    .awards-list {
+      margin-top: 8px;
+    }
+
+    .award {
+      margin-bottom: 5px;
+      font-size: 11px;
+      font-family: 'Arial', sans-serif;
+      color: #333;
+      padding-left: 14px;
+      position: relative;
+    }
+
+    .award::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #1a1a1a;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>{{name}}</h1>
+    <div class="contact">
+      {{email}} • {{phone}}{{#portfolio}} • <a href="{{portfolio}}">{{portfolio}}</a>{{/portfolio}}{{#github}} • <a href="{{github}}">{{github}}</a>{{/github}}
+    </div>
+
+    {{#hasSummary}}
+    <h2>Summary</h2>
+    <div class="summary">{{summary}}</div>
+    {{/hasSummary}}
+
+    {{#hasEducation}}
+    <h2>Education</h2>
+    {{#education}}
+    <div class="item">
+      <div class="item-header">
+        <div class="item-title">{{institution}}</div>
+        <div class="item-date">{{start}} – {{end}}</div>
+      </div>
+      <div class="item-subtitle">{{degree}}{{#gpa}} • GPA: {{gpa}}{{/gpa}}</div>
+      <div class="item-location">{{location}}</div>
+    </div>
+    {{/education}}
+    {{/hasEducation}}
+
+    {{#hasSkills}}
+    <h2>Technical Skills</h2>
+    <div class="skills-grid">
+      {{#skillsArray}}
+      <div class="skill-item">
+        <strong>{{category}}:</strong> <span>{{values}}</span>
+      </div>
+      {{/skillsArray}}
+    </div>
+    {{/hasSkills}}
+
+    {{#hasExperience}}
+    <h2>Professional Experience</h2>
+    {{#experience}}
+    <div class="item">
+      <div class="item-header">
+        <div class="item-title">{{company}}</div>
+        <div class="item-date">{{start}} – {{end}}</div>
+      </div>
+      <div class="item-subtitle">{{role}}</div>
+      <div class="item-location">{{location}}</div>
+      <ul>
+        {{#points}}
+        <li>{{.}}</li>
+        {{/points}}
+      </ul>
+    </div>
+    {{/experience}}
+    {{/hasExperience}}
+
+    {{#hasProjects}}
+    <h2>Projects</h2>
+    {{#projects}}
+    <div class="project">
+      <strong>{{title}}:</strong> {{description}} <em>({{tech}})</em>
+    </div>
+    {{/projects}}
+    {{/hasProjects}}
+
+    {{#hasPublications}}
+    <h2>Publications</h2>
+    {{#publications}}
+    <div class="publication">
+      <strong>{{title}}:</strong> {{description}}
+    </div>
+    {{/publications}}
+    {{/hasPublications}}
+
+    {{#hasAwards}}
+    <h2>Honors & Awards</h2>
+    <div class="awards-list">
+      {{#awards}}
+      <div class="award">{{.}}</div>
+      {{/awards}}
+    </div>
+    {{/hasAwards}}
+
+    {{#hasVolunteer}}
+    <h2>Leadership & Volunteer Work</h2>
+    {{#volunteer}}
+    <div class="item">
+      <div class="item-header">
+        <div class="item-title">{{org}}</div>
+        <div class="item-date">{{start}} – {{end}}</div>
+      </div>
+      <div class="item-subtitle">{{role}}</div>
+      <div class="item-location">{{location}}</div>
+      <ul>
+        <li>{{description}}</li>
+      </ul>
+    </div>
+    {{/volunteer}}
+    {{/hasVolunteer}}
+  </div>
+</body>
+</html>

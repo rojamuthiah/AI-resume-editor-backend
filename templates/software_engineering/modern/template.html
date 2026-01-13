@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Resume</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #e5e7eb;
+      font-family: Calibri, Arial, sans-serif;
+      color: #111827;
+    }
+
+    /* ===== PAGE ===== */
+    .page {
+      width: 794px;              /* A4 width */
+      min-height: 1123px;        /* A4 height */
+      margin: 24px auto;
+      background: #ffffff;
+      padding: 48px 56px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+      .page {
+        margin: 0;
+        box-shadow: none;
+      }
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      margin-bottom: 28px;
+    }
+
+    .name {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .contact {
+      font-size: 11px;
+      color: #374151;
+      margin-top: 6px;
+    }
+
+    .contact a {
+      color: #2563eb;
+      text-decoration: none;
+    }
+
+    .divider {
+      height: 2px;
+      background: #2563eb;
+      margin: 18px 0 28px;
+    }
+
+    /* ===== SECTIONS ===== */
+    .section {
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #2563eb;
+      margin-bottom: 10px;
+    }
+
+    /* ===== TEXT ===== */
+    .summary {
+      font-size: 12px;
+      line-height: 18px;
+      color: #1f2937;
+    }
+
+    /* ===== EXPERIENCE / EDUCATION ===== */
+    .item {
+      margin-bottom: 16px;
+    }
+
+    .item-title {
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+
+    .item-sub {
+      font-size: 11.5px;
+      color: #4b5563;
+      margin-top: 2px;
+    }
+
+    .item-meta {
+      font-size: 10.5px;
+      color: #6b7280;
+      margin-top: 2px;
+    }
+
+    ul {
+      margin: 6px 0 0 18px;
+      padding: 0;
+    }
+
+    li {
+      font-size: 11.5px;
+      line-height: 17px;
+      margin-bottom: 4px;
+    }
+
+    /* ===== SKILLS ===== */
+    .skills {
+      font-size: 11.5px;
+      line-height: 17px;
+    }
+
+    .skill-line {
+      margin-bottom: 6px;
+    }
+
+    .skill-line strong {
+      font-weight: 700;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+
+    <!-- HEADER -->
+    <div class="header">
+      <div class="name">{{name}}</div>
+      <div class="contact">
+        {{email}} | {{phone}}
+        {{#portfolio}} | <a href="{{portfolio}}">Portfolio</a>{{/portfolio}}
+        {{#github}} | <a href="{{github}}">GitHub</a>{{/github}}
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- SUMMARY -->
+    {{#hasSummary}}
+    <div class="section">
+      <div class="section-title">Summary</div>
+      <div class="summary">{{summary}}</div>
+    </div>
+    {{/hasSummary}}
+
+    <!-- SKILLS -->
+    {{#hasSkills}}
+    <div class="section">
+      <div class="section-title">Skills</div>
+      <div class="skills">
+        {{#skillsArray}}
+          <div class="skill-line">
+            <strong>{{category}}:</strong> {{values}}
+          </div>
+        {{/skillsArray}}
+      </div>
+    </div>
+    {{/hasSkills}}
+
+    <!-- EXPERIENCE -->
+    {{#hasExperience}}
+    <div class="section">
+      <div class="section-title">Experience</div>
+      {{#experience}}
+        <div class="item">
+          <div class="item-title">{{role}} — {{company}}</div>
+          <div class="item-meta">{{start}} – {{end}} | {{location}}</div>
+          <ul>
+            {{#points}}<li>{{.}}</li>{{/points}}
+          </ul>
+        </div>
+      {{/experience}}
+    </div>
+    {{/hasExperience}}
+
+    <!-- EDUCATION -->
+    {{#hasEducation}}
+    <div class="section">
+      <div class="section-title">Education</div>
+      {{#education}}
+        <div class="item">
+          <div class="item-title">{{institution}}</div>
+          <div class="item-sub">{{degree}}</div>
+          <div class="item-meta">{{start}} – {{end}} | {{location}}</div>
+        </div>
+      {{/education}}
+    </div>
+    {{/hasEducation}}
+
+    <!-- PROJECTS -->
+    {{#hasProjects}}
+    <div class="section">
+      <div class="section-title">Projects</div>
+      {{#projects}}
+        <div class="item">
+          <div class="item-title">{{title}}</div>
+          <div class="item-sub">{{description}} <em>({{tech}})</em></div>
+        </div>
+      {{/projects}}
+    </div>
+    {{/hasProjects}}
+
+    <!-- AWARDS -->
+    {{#hasAwards}}
+    <div class="section">
+      <div class="section-title">Awards</div>
+      <ul>
+        {{#awards}}<li>{{.}}</li>{{/awards}}
+      </ul>
+    </div>
+    {{/hasAwards}}
+
+  </div>
+</body>
+</html>

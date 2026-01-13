@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Helvetica', 'Arial', sans-serif;
+      margin: 0;
+      font-size: 11px;
+      color: #000;
+      line-height: 16px;
+      background: #e8e8e8;
+    }
+
+    @media screen {
+      .page {
+        max-width: 794px;
+        width: 100%;
+        min-height: 1123px;
+        margin: 24px auto;
+        padding: 32px 40px;
+        background: white;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+      .page {
+        width: auto;
+        min-height: auto;
+        margin: 0;
+        padding: 32px 40px;
+        box-shadow: none;
+      }
+    }
+
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    .name-bar {
+      padding: 0 0 16px 0;
+      border-bottom: 3px solid #000;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 700;
+      margin: 0;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #000;
+    }
+
+    .contact {
+      font-size: 10px;
+      margin-top: 8px;
+      letter-spacing: 0.5px;
+      color: #333;
+    }
+
+    .contact a {
+      color: #000;
+      text-decoration: none;
+    }
+
+    h2 {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 20px 0 10px 0;
+      padding-left: 12px;
+      border-left: 4px solid #000;
+      color: #000;
+      page-break-after: avoid;
+    }
+
+    .summary {
+      font-size: 11px;
+      line-height: 17px;
+      margin-bottom: 12px;
+      color: #222;
+      page-break-inside: avoid;
+    }
+
+    .entry {
+      margin-bottom: 16px;
+      page-break-inside: avoid;
+    }
+
+    .entry-header {
+      background: #f5f5f5;
+      padding: 8px 12px;
+      margin-bottom: 6px;
+      border-left: 3px solid #666;
+    }
+
+    .entry-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .entry-company {
+      font-weight: 700;
+      font-size: 12px;
+      color: #000;
+    }
+
+    .entry-date {
+      font-size: 10px;
+      color: #555;
+      font-weight: 600;
+    }
+
+    .entry-role {
+      font-size: 11px;
+      color: #333;
+      margin-top: 2px;
+      font-style: italic;
+    }
+
+    .entry-location {
+      font-size: 10px;
+      color: #666;
+      margin-top: 2px;
+    }
+
+    ul {
+      margin: 0 0 0 0;
+      padding-left: 24px;
+    }
+
+    li {
+      margin-bottom: 4px;
+      font-size: 11px;
+      line-height: 16px;
+      color: #222;
+    }
+
+    .skills-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 20px;
+      margin-top: 8px;
+    }
+
+    .skill-box {
+      flex: 1 1 45%;
+      min-width: 250px;
+    }
+
+    .skill-box strong {
+      display: block;
+      font-size: 10.5px;
+      color: #000;
+      margin-bottom: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .skill-box span {
+      font-size: 11px;
+      color: #333;
+      line-height: 16px;
+    }
+
+    .project-box, .pub-box {
+      background: #fafafa;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      border-left: 3px solid #999;
+      page-break-inside: avoid;
+    }
+
+    .project-box strong, .pub-box strong {
+      font-size: 11px;
+      color: #000;
+    }
+
+    .project-box, .pub-box {
+      font-size: 11px;
+      line-height: 16px;
+      color: #222;
+    }
+
+    .awards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 16px;
+      margin-top: 8px;
+    }
+
+    .award-badge {
+      font-size: 10.5px;
+      color: #222;
+      padding: 6px 10px;
+      background: #f0f0f0;
+      border-left: 3px solid #000;
+    }
+
+    .edu-entry {
+      margin-bottom: 14px;
+      page-break-inside: avoid;
+    }
+
+    .edu-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 3px;
+    }
+
+    .edu-school {
+      font-weight: 700;
+      font-size: 11.5px;
+      color: #000;
+    }
+
+    .edu-date {
+      font-size: 10px;
+      color: #555;
+    }
+
+    .edu-degree {
+      font-size: 11px;
+      color: #333;
+      margin-bottom: 2px;
+    }
+
+    .edu-details {
+      font-size: 10px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="name-bar">
+      <h1>{{name}}</h1>
+      <div class="contact">
+        {{email}} | {{phone}}{{#portfolio}} | <a href="{{portfolio}}">PORTFOLIO</a>{{/portfolio}}{{#github}} | <a href="{{github}}">GITHUB</a>{{/github}}
+      </div>
+    </div>
+
+    {{#hasSummary}}
+    <h2>Professional Summary</h2>
+    <div class="summary">{{summary}}</div>
+    {{/hasSummary}}
+
+    {{#hasExperience}}
+    <h2>Work Experience</h2>
+    {{#experience}}
+    <div class="entry">
+      <div class="entry-header">
+        <div class="entry-top">
+          <div class="entry-company">{{company}}</div>
+          <div class="entry-date">{{start}} – {{end}}</div>
+        </div>
+        <div class="entry-role">{{role}}</div>
+        <div class="entry-location">{{location}}</div>
+      </div>
+      <ul>
+        {{#points}}
+        <li>{{.}}</li>
+        {{/points}}
+      </ul>
+    </div>
+    {{/experience}}
+    {{/hasExperience}}
+
+    {{#hasEducation}}
+    <h2>Education</h2>
+    {{#education}}
+    <div class="edu-entry">
+      <div class="edu-header">
+        <div class="edu-school">{{institution}}</div>
+        <div class="edu-date">{{start}} – {{end}}</div>
+      </div>
+      <div class="edu-degree">{{degree}}</div>
+      <div class="edu-details">
+        {{location}}{{#gpa}} | GPA: {{gpa}}{{/gpa}}
+      </div>
+    </div>
+    {{/education}}
+    {{/hasEducation}}
+
+    {{#hasSkills}}
+    <h2>Core Competencies</h2>
+    <div class="skills-container">
+      {{#skillsArray}}
+      <div class="skill-box">
+        <strong>{{category}}</strong>
+        <span>{{values}}</span>
+      </div>
+      {{/skillsArray}}
+    </div>
+    {{/hasSkills}}
+
+    {{#hasProjects}}
+    <h2>Key Projects</h2>
+    {{#projects}}
+    <div class="project-box">
+      <strong>{{title}}:</strong> {{description}} <em>({{tech}})</em>
+    </div>
+    {{/projects}}
+    {{/hasProjects}}
+
+    {{#hasPublications}}
+    <h2>Publications</h2>
+    {{#publications}}
+    <div class="pub-box">
+      <strong>{{title}}:</strong> {{description}}
+    </div>
+    {{/publications}}
+    {{/hasPublications}}
+
+    {{#hasAwards}}
+    <h2>Recognition & Awards</h2>
+    <div class="awards-grid">
+      {{#awards}}
+      <div class="award-badge">{{.}}</div>
+      {{/awards}}
+    </div>
+    {{/hasAwards}}
+
+    {{#hasVolunteer}}
+    <h2>Community Engagement</h2>
+    {{#volunteer}}
+    <div class="entry">
+      <div class="entry-header">
+        <div class="entry-top">
+          <div class="entry-company">{{org}}</div>
+          <div class="entry-date">{{start}} – {{end}}</div>
+        </div>
+        <div class="entry-role">{{role}}</div>
+        <div class="entry-location">{{location}}</div>
+      </div>
+      <ul>
+        <li>{{description}}</li>
+      </ul>
+    </div>
+    {{/volunteer}}
+    {{/hasVolunteer}}
+  </div>
+</body>
+</html>

@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const UserResume = require("../models/UserResume");
+const { clearResumeCache } = require("./renderResumeController"); // Import cache clearing function
 
 // ─────────────────────────────────────────────
 // Helper: compare sections safely
@@ -22,7 +23,7 @@ const sectionsMatch = (current, before) => {
 };
 
 // ─────────────────────────────────────────────
-// ACCEPT EDIT
+// ACCEPT EDIT (Optimized with Cache Clearing)
 // ─────────────────────────────────────────────
 exports.acceptEdit = async (req, res) => {
   try {
@@ -81,6 +82,11 @@ exports.acceptEdit = async (req, res) => {
 
     resume.lastUpdated = new Date();
     await resume.save();
+ 
+    // CLEAR PDF CACHE after successful edit
+   
+    clearResumeCache(resumeId);
+    console.log(`[Cache Cleared] Resume ${resumeId} after accept edit on section: ${section}`);
 
     return res.json({
       success: true,
@@ -99,7 +105,7 @@ exports.acceptEdit = async (req, res) => {
 };
 
 // ─────────────────────────────────────────────
-// REVERT EDIT
+// REVERT EDIT (Optimized with Cache Clearing)
 // ─────────────────────────────────────────────
 exports.revertEdit = async (req, res) => {
   try {
@@ -150,6 +156,10 @@ exports.revertEdit = async (req, res) => {
     resume.lastUpdated = new Date();
     await resume.save();
 
+ 
+    clearResumeCache(resumeId);
+    console.log(`[Cache Cleared] Resume ${resumeId} after revert edit on section: ${section}`);
+
     return res.json({
       success: true,
       revertedSection: section,
@@ -165,3 +175,5 @@ exports.revertEdit = async (req, res) => {
     });
   }
 };
+
+module.exports = exports;

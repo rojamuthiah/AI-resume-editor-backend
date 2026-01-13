@@ -76,12 +76,33 @@ exports.getLatestConversation = async (req, res) => {
       });
     }
 
+    // 🔹 Transform messages
+    const transformedMessages = convo.messages.map(msg => {
+      if (msg.role === "assistant" && msg.type === "analyse") {
+        let score = null;
+
+        try {
+          const parsed = JSON.parse(msg.content);
+          score = parsed?.relevanceScore ?? "N/A";
+        } catch (e) {
+          score = "N/A";
+        }
+
+        return {
+          ...msg.toObject(),
+          content: `Analysis completed – score: ${score}. Please view full analysis in the analysis panel.`
+        };
+      }
+
+      return msg;
+    });
+
     return res.json({
       success: true,
       conversation: {
         conversationId: convo.conversationId,
         title: convo.title,
-        messages: convo.messages
+        messages: transformedMessages
       }
     });
 
@@ -94,6 +115,7 @@ exports.getLatestConversation = async (req, res) => {
   }
 };
 
+
 /**
  * GET FULL CONVERSATION BY ID
  * userId + resumeId + conversationId
@@ -103,6 +125,7 @@ exports.getConversationById = async (req, res) => {
     const { resumeId, conversationId } = req.params;
     const userId = req.user.id;
 
+    // 🔹 Validate resumeId
     if (!mongoose.Types.ObjectId.isValid(resumeId)) {
       return res.status(400).json({
         success: false,
@@ -110,6 +133,7 @@ exports.getConversationById = async (req, res) => {
       });
     }
 
+    // 🔹 Fetch conversation
     const convo = await ResumeConversation.findOne({
       userId,
       resumeId,
@@ -123,12 +147,33 @@ exports.getConversationById = async (req, res) => {
       });
     }
 
+    // 🔹 Transform messages (assistant + analyse only)
+    const transformedMessages = convo.messages.map(msg => {
+      if (msg.role === "assistant" && msg.type === "analyse") {
+        let score = "N/A";
+
+        try {
+          const parsed = JSON.parse(msg.content);
+          score = parsed?.relevanceScore ?? "N/A";
+        } catch (err) {
+          // silently fail
+        }
+
+        return {
+          ...msg.toObject(),
+          content: `Analysis completed – score: ${score}. Please view full analysis in the analysis panel.`
+        };
+      }
+
+      return msg;
+    });
+
     return res.json({
       success: true,
       conversation: {
         conversationId: convo.conversationId,
         title: convo.title,
-        messages: convo.messages
+        messages: transformedMessages
       }
     });
 

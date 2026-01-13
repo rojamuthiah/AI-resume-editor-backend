@@ -182,128 +182,128 @@ exports.getResumeById = async (req, res) => {
  * RENDER RESUME (PDF)
  * - Always by resumeId
  */
-exports.renderResume = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const { resumeId, previewMode = false, previewData = null } = req.body;
+// exports.renderResume = async (req, res) => {
+// try {
+//   const userId = req.user.id;
+//   const { resumeId, previewMode = false, previewData = null } = req.body;
 
-    if (!resumeId) {
-      return res.status(400).json({
-        success: false,
-        message: "resumeId is required"
-      });
-    }
+//   if (!resumeId) {
+//     return res.status(400).json({
+//       success: false,
+//       message: "resumeId is required"
+//     });
+//   }
 
-    if (!mongoose.Types.ObjectId.isValid(resumeId)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid resumeId"
-      });
-    }
+//   if (!mongoose.Types.ObjectId.isValid(resumeId)) {
+//     return res.status(400).json({
+//       success: false,
+//       message: "Invalid resumeId"
+//     });
+//   }
 
-    const resume = await UserResume.findOne({
-      _id: resumeId,
-      userId
-    });
+//   const resume = await UserResume.findOne({
+//     _id: resumeId,
+//     userId
+//   });
 
-    if (!resume) {
-      return res.status(404).json({
-        success: false,
-        message: "Resume not found"
-      });
-    }
+//   if (!resume) {
+//     return res.status(404).json({
+//       success: false,
+//       message: "Resume not found"
+//     });
+//   }
 
-    const templatePath = path.join(
-      __dirname,
-      "..",
-      "..",
-      "templates",
-      resume.category,
-      resume.templateKey,
-      "template.html"
-    );
+//   const templatePath = path.join(
+//     __dirname,
+//     "..",
+//     "..",
+//     "templates",
+//     resume.category,
+//     resume.templateKey,
+//     "template.html"
+//   );
 
-    if (!fs.existsSync(templatePath)) {
-      return res.status(404).json({
-        success: false,
-        message: "Template HTML not found"
-      });
-    }
+//   if (!fs.existsSync(templatePath)) {
+//     return res.status(404).json({
+//       success: false,
+//       message: "Template HTML not found"
+//     });
+//   }
 
-    const template = fs.readFileSync(templatePath, "utf-8");
+//   const template = fs.readFileSync(templatePath, "utf-8");
 
-    let resumeJsonData = resume.resumeJson;
+//   let resumeJsonData = resume.resumeJson;
 
-    if (previewMode && previewData) {
-      resumeJsonData = {
-        ...resume.resumeJson,
-        ...previewData
-      };
-    }
+//   if (previewMode && previewData) {
+//     resumeJsonData = {
+//       ...resume.resumeJson,
+//       ...previewData
+//     };
+//   }
 
-    const resumeData = {
-      ...resumeJsonData,
+//   const resumeData = {
+//     ...resumeJsonData,
 
-      hasSummary: !!resumeJsonData.summary,
+//     hasSummary: !!resumeJsonData.summary,
 
-      hasEducation:
-        Array.isArray(resumeJsonData.education) &&
-        resumeJsonData.education.length > 0,
+//     hasEducation:
+//       Array.isArray(resumeJsonData.education) &&
+//       resumeJsonData.education.length > 0,
 
-      hasExperience:
-        Array.isArray(resumeJsonData.experience) &&
-        resumeJsonData.experience.length > 0,
+//     hasExperience:
+//       Array.isArray(resumeJsonData.experience) &&
+//       resumeJsonData.experience.length > 0,
 
-      hasProjects:
-        Array.isArray(resumeJsonData.projects) &&
-        resumeJsonData.projects.length > 0,
+//     hasProjects:
+//       Array.isArray(resumeJsonData.projects) &&
+//       resumeJsonData.projects.length > 0,
 
-      hasPublications:
-        Array.isArray(resumeJsonData.publications) &&
-        resumeJsonData.publications.length > 0,
+//     hasPublications:
+//       Array.isArray(resumeJsonData.publications) &&
+//       resumeJsonData.publications.length > 0,
 
-      hasAwards:
-        Array.isArray(resumeJsonData.awards) &&
-        resumeJsonData.awards.length > 0,
+//     hasAwards:
+//       Array.isArray(resumeJsonData.awards) &&
+//       resumeJsonData.awards.length > 0,
 
-      hasVolunteer:
-        Array.isArray(resumeJsonData.volunteer) &&
-        resumeJsonData.volunteer.length > 0,
+//     hasVolunteer:
+//       Array.isArray(resumeJsonData.volunteer) &&
+//       resumeJsonData.volunteer.length > 0,
 
-      hasSkills:
-        resumeJsonData.skills &&
-        Object.keys(resumeJsonData.skills).length > 0,
+//     hasSkills:
+//       resumeJsonData.skills &&
+//       Object.keys(resumeJsonData.skills).length > 0,
 
-      skillsArray: Object.entries(resumeJsonData.skills || {}).map(
-        ([category, values]) => ({
-          category,
-          values: Array.isArray(values) ? values.join(", ") : String(values),
-        })
-      ),
+//     skillsArray: Object.entries(resumeJsonData.skills || {}).map(
+//       ([category, values]) => ({
+//         category,
+//         values: Array.isArray(values) ? values.join(", ") : String(values),
+//       })
+//     ),
 
-      isPreview: previewMode,
-    };
+//     isPreview: previewMode,
+//   };
 
 
-    const html = Mustache.render(template, resumeData);
-    const pdfBuffer = await generatePDF(html);
+//   const html = Mustache.render(template, resumeData);
+//   const pdfBuffer = await generatePDF(html);
 
-    res.setHeader("Content-Type", "application/pdf");
-    res.setHeader(
-      "Content-Disposition",
-      `inline; filename=${previewMode ? "preview.pdf" : "resume.pdf"}`
-    );
+//   res.setHeader("Content-Type", "application/pdf");
+//   res.setHeader(
+//     "Content-Disposition",
+//     `inline; filename=${previewMode ? "preview.pdf" : "resume.pdf"}`
+//   );
 
-    res.send(pdfBuffer);
+//   res.send(pdfBuffer);
 
-  } catch (err) {
-    console.error("Render Resume Error:", err);
-    res.status(500).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+// } catch (err) {
+//   console.error("Render Resume Error:", err);
+//   res.status(500).json({
+//     success: false,
+//     message: err.message
+//   });
+// }
+// };
 
 
 

@@ -1,0 +1,92 @@
+{
+  "name": "Sarah Mitchell",
+  "email": "sarah.mitchell@email.com",
+  "phone": "(555) 234-5678",
+  "portfolio": "https://linkedin.com/in/sarahmitchell",
+  "github": "",
+  "summary": "Results-driven Sales & Marketing professional with 8+ years of experience driving revenue growth and building high-performing teams. Proven track record of exceeding quotas by 150%+ and launching successful go-to-market strategies for B2B SaaS products.",
+
+  "education": [
+    {
+      "institution": "Boston University",
+      "location": "Boston, MA",
+      "degree": "Bachelor of Science in Marketing",
+      "gpa": "3.8",
+      "start": "2012",
+      "end": "2016"
+    }
+  ],
+
+  "skills": {
+    "Sales": ["Enterprise Sales", "Account Management", "Pipeline Development", "Contract Negotiation", "Sales Forecasting"],
+    "Marketing": ["Digital Marketing", "Content Strategy", "SEO/SEM", "Marketing Automation", "Campaign Management"],
+    "Tools": ["Salesforce", "HubSpot", "Google Analytics", "LinkedIn Sales Navigator", "Marketo", "Tableau"],
+    "Core Competencies": ["Team Leadership", "Customer Relationship Management", "Market Analysis", "Strategic Planning"]
+  },
+
+  "experience": [
+    {
+      "company": "TechVision Solutions",
+      "location": "San Francisco, CA",
+      "role": "Senior Sales Manager",
+      "start": "Jan 2021",
+      "end": "Present",
+      "points": [
+        "Led team of 12 sales representatives, achieving 165% of annual quota ($8.5M) through strategic territory management and coaching",
+        "Developed and executed go-to-market strategy for new product line, generating $2.3M in first-year revenue",
+        "Reduced sales cycle from 90 to 60 days by implementing consultative selling methodology and optimizing qualification process",
+        "Built strategic partnerships with 15+ enterprise clients including Fortune 500 companies, resulting in 40% increase in average deal size",
+        "Collaborated with marketing team to launch demand generation campaigns that increased qualified leads by 85%"
+      ]
+    },
+    {
+      "company": "CloudSync Inc.",
+      "location": "Austin, TX",
+      "role": "Marketing Manager",
+      "start": "Jun 2018",
+      "end": "Dec 2020",
+      "points": [
+        "Managed $1.2M marketing budget across digital, content, and event channels with 320% ROI",
+        "Launched content marketing strategy that increased organic traffic by 250% and generated 500+ MQLs per month",
+        "Orchestrated 8 successful product launches with cross-functional teams, exceeding adoption targets by average of 45%",
+        "Implemented marketing automation platform (HubSpot) reducing lead nurturing time by 60% and improving conversion rates by 35%"
+      ]
+    },
+    {
+      "company": "Stellar Software",
+      "location": "Denver, CO",
+      "role": "Account Executive",
+      "start": "Aug 2016",
+      "end": "May 2018",
+      "points": [
+        "Exceeded sales quota for 7 consecutive quarters, averaging 142% attainment",
+        "Managed portfolio of 45+ mid-market accounts with annual contract values ranging from $50K-$300K",
+        "Pioneered social selling strategy using LinkedIn, increasing outbound response rates from 8% to 28%",
+        "Received 'Rookie of the Year' award in first year for highest new business acquisition"
+      ]
+    }
+  ],
+
+  "projects": [
+    {
+      "title": "Brand Repositioning Campaign",
+      "description": "Led comprehensive rebranding initiative resulting in 65% increase in brand awareness and 40% improvement in customer perception scores within 6 months.",
+      "tech": "Market Research, Brand Strategy, Multi-Channel Campaigns"
+    },
+    {
+      "title": "Sales Enablement Program",
+      "description": "Designed and implemented sales training program and collateral library that reduced onboarding time by 50% and increased win rates by 25%.",
+      "tech": "Training Development, CRM Integration, Performance Analytics"
+    }
+  ],
+
+  "publications": [],
+
+  "awards": [
+    "President's Club Award for Top 5% Sales Performance, TechVision Solutions (2022, 2023)",
+    "Marketing Excellence Award for Best Campaign ROI, CloudSync Inc. (2019)",
+    "Rookie of the Year, Stellar Software (2017)"
+  ],
+
+  "volunteer": []
+}

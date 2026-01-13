@@ -9,7 +9,7 @@ const messageSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ["ask", "edit"],
+      enum: ["ask", "edit","analyse"],
       required: true
     },
     content: {

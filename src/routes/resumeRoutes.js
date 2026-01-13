@@ -6,12 +6,13 @@ const {
   createResume,
   getAllResumes,
   getResumeById,
-  renderResume,
   renameResume,
   deleteResume,
   renderResumeHtml,
   downloadResumePdf
 } = require("../controllers/resumeController");
+
+const {renderResume,clearCache,getCacheStats} = require("../controllers/renderResumeController")
 
 const router = express.Router();
 
@@ -49,5 +50,8 @@ router.patch("/:resumeId", renameResume);
 router.delete("/:resumeId", deleteResume);
 router.post("/render-html", renderResumeHtml);
 router.get("/:resumeId/download", downloadResumePdf);
+router.get("/getCacheStats",getCacheStats)
+router.post("/clearCache",clearCache)
+
 
 module.exports = router;
